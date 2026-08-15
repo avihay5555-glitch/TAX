@@ -431,6 +431,64 @@
       padding-bottom: env(safe-area-inset-bottom);
     }
 
+    .live-score-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, rgba(44, 103, 242, 0.1), rgba(23, 155, 103, 0.1));
+      border: 1.5px solid rgba(44, 103, 242, 0.22);
+      border-radius: 18px;
+      padding: 14px 18px;
+      gap: 12px;
+    }
+
+    .live-score-label {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .live-score-value {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: var(--blue);
+      min-width: 44px;
+      text-align: center;
+      transition: transform 0.18s ease, color 0.18s ease;
+    }
+
+    .live-score-value.pulse {
+      animation: scorePulse 0.32s ease;
+    }
+
+    @keyframes scorePulse {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.22); color: #179b67; }
+      100% { transform: scale(1); }
+    }
+
+    .stat-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 24px 48px rgba(15, 23, 42, 0.14);
+    }
+
+    .stat-value {
+      transition: color 0.22s ease;
+    }
+
+    .pill, .chip {
+      transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition);
+    }
+
+    .pill.active, .chip.active {
+      box-shadow: 0 6px 18px rgba(44, 103, 242, 0.28);
+    }
+
     @media (min-width: 860px) {
       .main-grid {
         grid-template-columns: minmax(320px, 430px) minmax(0, 1fr);
@@ -469,7 +527,6 @@
           <div class="group">
             <div class="group-title">
               <span>סוג משק בית</span>
-              <span class="hint">קובע את נקודות הבסיס</span>
             </div>
             <div class="segmented" id="householdType"></div>
           </div>
@@ -477,7 +534,6 @@
           <div class="group">
             <div class="group-title">
               <span>ילדים עד גיל 18</span>
-              <span class="hint">צ׳יפים מהירים + שליטה ידנית</span>
             </div>
             <div class="chips" id="kidsUnderChips"></div>
             <div class="stepper">
@@ -493,7 +549,6 @@
           <div class="group">
             <div class="group-title">
               <span>ילדים מגיל 18 ומעלה</span>
-              <span class="hint">0.1 נקודה לכל ילד</span>
             </div>
             <div class="stepper">
               <button type="button" data-step="adult" data-dir="-1" aria-label="הפחתת ילדים מעל גיל 18">−</button>
@@ -505,10 +560,14 @@
             </div>
           </div>
 
+          <div class="live-score-bar" id="liveScoreBar">
+            <span class="live-score-label">נקודות תקן מעודכנות</span>
+            <span class="live-score-value" id="liveScoreValue">0.0</span>
+          </div>
+
           <div class="income-card">
             <div class="group-title">
-              <span>הכנסה נטו חודשית</span>
-              <span class="hint">טווח מהיר 15,000–45,000 ₪ · הזנה ידנית עד 70,000 ₪</span>
+              <span>הכנסה חייבת במס (חודשית)</span>
             </div>
             <div class="income-display">
               <div class="income-value" id="incomeDisplay">₪ 22,000</div>
@@ -601,7 +660,7 @@
 
     const DEFAULT_STATE = {
       householdType: "couple",
-      kidsUnder18: 2,
+      kidsUnder18: 3,
       kids18Plus: 0,
       income: 22000
     };
@@ -642,7 +701,8 @@
       incomePerPointValue: document.getElementById("incomePerPointValue"),
       taxChart: document.getElementById("taxChart"),
       shareBtn: document.getElementById("shareBtn"),
-      resetBtn: document.getElementById("resetBtn")
+      resetBtn: document.getElementById("resetBtn"),
+      liveScoreValue: document.getElementById("liveScoreValue")
     };
 
     const currencyFormatter = new Intl.NumberFormat("he-IL", {
@@ -912,6 +972,14 @@
       els.kidsAdultValue.textContent = String(state.kids18Plus);
       els.pointsValue.textContent = numberFormatter.format(metrics.points);
       els.incomePerPointValue.textContent = formatCurrency(metrics.incomePerPoint);
+
+      const newScore = numberFormatter.format(metrics.points);
+      if (els.liveScoreValue.textContent !== newScore) {
+        els.liveScoreValue.textContent = newScore;
+        els.liveScoreValue.classList.remove("pulse");
+        void els.liveScoreValue.offsetWidth;
+        els.liveScoreValue.classList.add("pulse");
+      }
       els.oldTaxValue.textContent = formatCurrency(metrics.oldTotal);
       els.newTaxValue.textContent = formatCurrency(metrics.newTotal);
       els.oldTaxPerPointValue.textContent = formatCurrency(metrics.oldPointTax);
