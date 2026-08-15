@@ -31,10 +31,7 @@
       --transition: 160ms ease;
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     html, body {
       margin: 0;
@@ -47,16 +44,9 @@
       color: var(--text);
     }
 
-    body {
-      padding: max(12px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom));
-    }
+    body { padding: max(12px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom)); }
 
-    .app {
-      width: min(100%, 1100px);
-      margin: 0 auto;
-      display: grid;
-      gap: 12px;
-    }
+    .app { width: min(100%, 1100px); margin: 0 auto; display: grid; gap: 12px; }
 
     .panel {
       background: var(--surface);
@@ -66,11 +56,7 @@
       box-shadow: var(--shadow);
     }
 
-    .hero {
-      padding: 18px;
-      display: grid;
-      gap: 12px;
-    }
+    .hero { padding: 16px; display: grid; gap: 10px; }
 
     .hero-top {
       display: flex;
@@ -80,191 +66,129 @@
       flex-wrap: wrap;
     }
 
-    h1, h2, h3, p {
-      margin: 0;
-    }
+    h1, h2, h3, p { margin: 0; }
 
-    h1 {
-      font-size: clamp(1.8rem, 5vw, 2.7rem);
-      line-height: 1.08;
-    }
+    h1 { font-size: clamp(1.5rem, 4.5vw, 2.2rem); line-height: 1.1; }
 
-    .subtitle {
-      color: var(--muted);
-      font-size: 0.98rem;
-      line-height: 1.5;
-      max-width: 62ch;
-    }
+    .subtitle { color: var(--muted); font-size: 0.88rem; line-height: 1.45; max-width: 55ch; }
 
-    .action-bar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
+    .action-bar { display: flex; gap: 8px; flex-wrap: wrap; }
 
-    button, input {
-      font: inherit;
-    }
+    button, input { font: inherit; }
 
     .btn {
       border: 0;
-      padding: 12px 16px;
-      border-radius: 16px;
+      padding: 10px 14px;
+      border-radius: 14px;
       cursor: pointer;
       transition: transform var(--transition), box-shadow var(--transition), background var(--transition), opacity var(--transition);
-      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
       font-weight: 700;
+      font-size: 0.9rem;
     }
 
-    .btn:active {
-      transform: scale(0.97);
-      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
-    }
+    .btn:active { transform: scale(0.97); }
 
-    .btn-primary {
-      color: white;
-      background: linear-gradient(135deg, #2c67f2, #1746b7);
-    }
+    .btn-primary { color: white; background: linear-gradient(135deg, #2c67f2, #1746b7); }
 
-    .btn-secondary {
-      color: var(--text);
-      background: rgba(255, 255, 255, 0.92);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-    }
+    .btn-secondary { color: var(--text); background: rgba(255, 255, 255, 0.92); border: 1px solid rgba(148, 163, 184, 0.18); }
 
-    .grid {
-      display: grid;
-      gap: 12px;
-    }
+    .btn-green { color: white; background: linear-gradient(135deg, #179b67, #0e7a51); }
 
-    .controls {
-      padding: 16px;
-    }
+    .grid { display: grid; gap: 12px; }
 
-    .controls-grid {
-      display: grid;
-      gap: 14px;
-    }
+    .controls { padding: 14px; }
 
-    .group {
-      display: grid;
-      gap: 8px;
-    }
+    .controls-grid { display: grid; gap: 12px; }
+
+    .group { display: grid; gap: 6px; }
 
     .group-title {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      font-size: 0.96rem;
+      font-size: 0.92rem;
       font-weight: 800;
     }
 
-    .hint {
-      color: var(--muted);
-      font-size: 0.84rem;
-      font-weight: 500;
-    }
+    .hint { color: var(--muted); font-size: 0.82rem; font-weight: 500; }
 
-    .segmented,
-    .chips {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
+    .segmented, .chips { display: flex; gap: 7px; flex-wrap: wrap; }
 
-    .pill,
-    .chip {
+    .pill, .chip {
       appearance: none;
       border: 1px solid rgba(44, 103, 242, 0.12);
       background: rgba(255, 255, 255, 0.9);
       border-radius: var(--chip-radius);
       color: var(--text);
-      padding: 10px 14px;
+      padding: 8px 12px;
+      font-size: 0.88rem;
       font-weight: 700;
       cursor: pointer;
-      transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition);
+      transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition);
     }
 
-    .pill:active,
-    .chip:active {
-      transform: scale(0.97);
-    }
+    .pill:active, .chip:active { transform: scale(0.97); }
 
-    .pill.active,
-    .chip.active {
+    .pill.active, .chip.active {
       background: linear-gradient(135deg, rgba(44, 103, 242, 0.96), rgba(23, 70, 183, 0.92));
       border-color: transparent;
       color: #fff;
+      box-shadow: 0 6px 18px rgba(44, 103, 242, 0.28);
     }
 
     .stepper {
       display: grid;
       grid-template-columns: auto 1fr auto;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       background: rgba(255, 255, 255, 0.72);
       border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 10px;
+      border-radius: 18px;
+      padding: 8px;
     }
 
     .stepper button {
-      width: 44px;
-      height: 44px;
-      border-radius: 14px;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
       border: 0;
       background: rgba(44, 103, 242, 0.12);
       color: var(--blue);
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 800;
       cursor: pointer;
       transition: transform var(--transition), background var(--transition);
     }
 
-    .stepper button:active {
-      transform: scale(0.95);
-      background: rgba(44, 103, 242, 0.2);
-    }
+    .stepper button:active { transform: scale(0.95); background: rgba(44, 103, 242, 0.2); }
 
-    .stepper-value {
-      display: grid;
-      gap: 4px;
-      text-align: center;
-    }
+    .stepper-value { display: grid; gap: 2px; text-align: center; }
 
-    .stepper-number {
-      font-size: 1.3rem;
-      font-weight: 800;
-    }
+    .stepper-number { font-size: 1.2rem; font-weight: 800; }
 
+    /* Income card with +/- buttons */
     .income-card {
-      padding: 16px;
+      padding: 14px;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 247, 255, 0.9));
-      border-radius: 24px;
+      border-radius: 20px;
       border: 1px solid rgba(148, 163, 184, 0.2);
       display: grid;
-      gap: 12px;
+      gap: 10px;
     }
 
-    .income-display {
-      display: grid;
-      gap: 4px;
-    }
+    .income-display { display: grid; gap: 3px; }
 
-    .income-value {
-      font-size: clamp(2rem, 8vw, 3.6rem);
-      font-weight: 900;
-      letter-spacing: -0.03em;
-    }
+    .income-value { font-size: clamp(1.7rem, 7vw, 3rem); font-weight: 900; letter-spacing: -0.03em; }
 
     .income-edit {
       width: 100%;
       border: 0;
       background: rgba(44, 103, 242, 0.08);
-      border-radius: 18px;
-      padding: 14px 16px;
-      font-size: 1.2rem;
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 1.1rem;
       font-weight: 700;
       color: var(--text);
       text-align: center;
@@ -272,20 +196,39 @@
       transition: outline-color var(--transition), background var(--transition);
     }
 
-    .income-edit:focus {
-      outline-color: rgba(44, 103, 242, 0.32);
-      background: rgba(44, 103, 242, 0.12);
+    .income-edit:focus { outline-color: rgba(44, 103, 242, 0.32); background: rgba(44, 103, 242, 0.12); }
+
+    .income-stepper-row {
+      display: grid;
+      grid-template-columns: 44px 1fr 44px;
+      align-items: center;
+      gap: 8px;
     }
 
-    .range-wrap {
-      display: grid;
-      gap: 10px;
+    .income-step-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 0;
+      background: rgba(44, 103, 242, 0.12);
+      color: var(--blue);
+      font-size: 1.5rem;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform var(--transition), background var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+
+    .income-step-btn:active { transform: scale(0.95); background: rgba(44, 103, 242, 0.22); }
+
+    .range-wrap { display: grid; gap: 8px; }
 
     input[type="range"] {
       width: 100%;
       appearance: none;
-      height: 14px;
+      height: 12px;
       background: linear-gradient(90deg, rgba(44, 103, 242, 0.22), rgba(23, 155, 103, 0.22));
       border-radius: 999px;
       outline: none;
@@ -293,165 +236,110 @@
 
     input[type="range"]::-webkit-slider-thumb {
       appearance: none;
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       background: #fff;
       border: 4px solid var(--blue);
-      box-shadow: 0 10px 20px rgba(44, 103, 242, 0.24);
+      box-shadow: 0 8px 18px rgba(44, 103, 242, 0.24);
     }
 
     input[type="range"]::-moz-range-thumb {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       background: #fff;
       border: 4px solid var(--blue);
-      box-shadow: 0 10px 20px rgba(44, 103, 242, 0.24);
+      box-shadow: 0 8px 18px rgba(44, 103, 242, 0.24);
     }
 
-    .range-legend {
-      display: flex;
-      justify-content: space-between;
-      color: var(--muted);
-      font-size: 0.84rem;
-    }
+    .range-legend { display: flex; justify-content: space-between; color: var(--muted); font-size: 0.82rem; }
 
-    .stats {
-      display: grid;
-      gap: 12px;
-    }
+    .stats { display: grid; gap: 10px; }
 
-    .stats-grid {
-      display: grid;
-      gap: 12px;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    }
+    .stats-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 
     .stat-card {
-      padding: 16px;
-      border-radius: 24px;
+      padding: 14px;
+      border-radius: 20px;
       background: var(--surface-strong);
       border: 1px solid rgba(148, 163, 184, 0.2);
       display: grid;
-      gap: 8px;
-      min-height: 160px;
+      gap: 6px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
+
+    .stat-card:hover { transform: translateY(-3px); box-shadow: 0 24px 48px rgba(15, 23, 42, 0.14); }
 
     .stat-card.old { background: linear-gradient(180deg, rgba(255, 245, 247, 0.96), rgba(255, 239, 243, 0.92)); }
     .stat-card.new { background: linear-gradient(180deg, rgba(241, 247, 255, 0.96), rgba(232, 242, 255, 0.92)); }
     .stat-card.save { background: linear-gradient(180deg, rgba(237, 251, 245, 0.98), rgba(229, 248, 238, 0.94)); }
 
-    .stat-label {
-      color: var(--muted);
-      font-size: 0.9rem;
-      font-weight: 700;
-    }
+    .stat-label { color: var(--muted); font-size: 0.85rem; font-weight: 700; }
 
     .stat-value {
-      font-size: clamp(1.7rem, 5vw, 2.4rem);
+      font-size: clamp(1.5rem, 4.5vw, 2.1rem);
       font-weight: 900;
       letter-spacing: -0.03em;
+      transition: color 0.22s ease;
     }
 
-    .stat-subgrid {
-      display: grid;
-      gap: 8px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+    .stat-subgrid { display: grid; gap: 6px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 
-    .mini {
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.72);
-    }
+    .mini { padding: 8px 10px; border-radius: 14px; background: rgba(255, 255, 255, 0.72); }
 
-    .mini strong {
-      display: block;
-      margin-top: 4px;
-      font-size: 1.05rem;
-    }
+    .mini strong { display: block; margin-top: 3px; font-size: 0.95rem; }
 
     .summary {
-      padding: 16px;
-      display: grid;
-      gap: 8px;
+      padding: 12px 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 24px;
       color: var(--muted);
-      line-height: 1.55;
+      font-size: 0.88rem;
+      line-height: 1.5;
     }
 
-    .summary strong {
-      color: var(--text);
-    }
+    .summary strong { color: var(--text); }
 
-    .chart-panel {
-      padding: 16px;
-      display: grid;
-      gap: 12px;
-    }
+    /* Chart */
+    .chart-panel { padding: 14px; display: grid; gap: 10px; }
 
     .chart-box {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 247, 255, 0.88));
-      border-radius: 24px;
+      border-radius: 20px;
       border: 1px solid rgba(148, 163, 184, 0.18);
-      padding: 12px;
+      padding: 10px;
       overflow: hidden;
     }
 
-    svg {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-height: 340px;
-    }
+    svg { display: block; width: 100%; height: auto; max-height: 320px; }
 
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      color: var(--muted);
-      font-size: 0.96rem;
-    }
+    .legend { display: flex; flex-wrap: wrap; gap: 12px; color: var(--muted); font-size: 0.9rem; }
 
-    .legend-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .legend-item { display: inline-flex; align-items: center; gap: 7px; }
 
-    .swatch {
-      width: 22px;
-      height: 10px;
-      border-radius: 999px;
-    }
+    .swatch { width: 20px; height: 8px; border-radius: 999px; }
 
-    .footer-note {
-      color: var(--muted);
-      font-size: 0.9rem;
-      line-height: 1.6;
-      text-align: center;
-      padding-bottom: env(safe-area-inset-bottom);
-    }
+    /* Action row below chart */
+    .chart-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
 
+    /* Live score bar */
     .live-score-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       background: linear-gradient(135deg, rgba(44, 103, 242, 0.1), rgba(23, 155, 103, 0.1));
       border: 1.5px solid rgba(44, 103, 242, 0.22);
-      border-radius: 18px;
-      padding: 14px 18px;
+      border-radius: 16px;
+      padding: 12px 16px;
       gap: 12px;
     }
 
-    .live-score-label {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--muted);
-    }
+    .live-score-label { font-size: 0.88rem; font-weight: 700; color: var(--muted); }
 
     .live-score-value {
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 900;
       letter-spacing: -0.03em;
       color: var(--blue);
@@ -460,9 +348,7 @@
       transition: transform 0.18s ease, color 0.18s ease;
     }
 
-    .live-score-value.pulse {
-      animation: scorePulse 0.32s ease;
-    }
+    .live-score-value.pulse { animation: scorePulse 0.32s ease; }
 
     @keyframes scorePulse {
       0% { transform: scale(1); }
@@ -470,40 +356,114 @@
       100% { transform: scale(1); }
     }
 
-    .stat-card {
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    /* Footer */
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.55;
+      text-align: center;
+      padding-bottom: env(safe-area-inset-bottom);
     }
 
-    .stat-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 24px 48px rgba(15, 23, 42, 0.14);
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
     }
 
-    .stat-value {
-      transition: color 0.22s ease;
+    .modal-overlay.open { display: flex; }
+
+    .modal-sheet {
+      background: #fff;
+      border-radius: 28px 28px 0 0;
+      width: min(100%, 700px);
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 24px 20px 32px;
+      display: grid;
+      gap: 20px;
+      animation: slideUp 0.28s ease;
     }
 
-    .pill, .chip {
-      transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition), box-shadow var(--transition);
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
     }
 
-    .pill.active, .chip.active {
-      box-shadow: 0 6px 18px rgba(44, 103, 242, 0.28);
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-close {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 0;
+      background: rgba(148, 163, 184, 0.18);
+      font-size: 1.3rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+    }
+
+    .tax-table-wrap { overflow-x: auto; }
+
+    .tax-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+    }
+
+    .tax-table th {
+      background: rgba(44, 103, 242, 0.08);
+      padding: 10px 12px;
+      text-align: right;
+      font-weight: 800;
+      color: var(--text);
+      border-bottom: 2px solid rgba(44, 103, 242, 0.18);
+    }
+
+    .tax-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+      color: var(--text);
+    }
+
+    .tax-table tr:last-child td { border-bottom: 0; }
+
+    .tax-table tr:nth-child(even) td { background: rgba(244, 247, 255, 0.7); }
+
+    .table-section-title {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      flex-shrink: 0;
     }
 
     @media (min-width: 860px) {
-      .main-grid {
-        grid-template-columns: minmax(320px, 430px) minmax(0, 1fr);
-        align-items: start;
-      }
-      .hero {
-        padding: 20px;
-      }
-      .controls,
-      .chart-panel,
-      .summary {
-        padding: 18px;
-      }
+      .main-grid { grid-template-columns: minmax(300px, 400px) minmax(0, 1fr); align-items: start; }
+      .hero { padding: 18px; }
+      .controls, .chart-panel, .summary { padding: 16px; }
     }
   </style>
 </head>
@@ -512,13 +472,13 @@
     <section class="panel hero">
       <div class="hero-top">
         <div>
-          <p class="hint">מחשבון מהיר · מותאם לנייד · חד-עמודי</p>
-          <h1>השוואת מס איזון למשק בית בקיבוץ</h1>
-          <p class="subtitle">השוו בין המנגנון הישן למנגנון המעודכן, ראו כמה תחסכו בכל חודש, ומה תהיה ההשפעה השנתית על משק הבית.</p>
+          <p class="hint">מחשבון מהיר · מותאם לנייד</p>
+          <h1>השוואת מס איזון – קיבוץ</h1>
+          <p class="subtitle">השוו מנגנון ישן מול מעודכן וראו כמה תחסכו. לא כולל קרן עזרה הדדית.</p>
         </div>
         <div class="action-bar">
-          <button class="btn btn-primary" id="shareBtn" type="button">שיתוף האפליקציה</button>
-          <button class="btn btn-secondary" id="resetBtn" type="button">איפוס מהיר</button>
+          <button class="btn btn-primary" id="shareBtn" type="button">שיתוף</button>
+          <button class="btn btn-secondary" id="resetBtn" type="button">איפוס</button>
         </div>
       </div>
     </section>
@@ -527,36 +487,30 @@
       <div class="panel controls">
         <div class="controls-grid">
           <div class="group">
-            <div class="group-title">
-              <span>סוג משק בית</span>
-            </div>
+            <div class="group-title"><span>סוג משק בית</span></div>
             <div class="segmented" id="householdType"></div>
           </div>
 
           <div class="group">
-            <div class="group-title">
-              <span>ילדים עד גיל 18</span>
-            </div>
+            <div class="group-title"><span>ילדים עד גיל 18</span></div>
             <div class="chips" id="kidsUnderChips"></div>
             <div class="stepper">
               <button type="button" data-step="under" data-dir="-1" aria-label="הפחתת ילדים עד גיל 18">−</button>
               <div class="stepper-value">
                 <span class="stepper-number" id="kidsUnderValue">0</span>
-                <span class="hint">ילדים עד גיל 18</span>
+                <span class="hint">עד גיל 18</span>
               </div>
               <button type="button" data-step="under" data-dir="1" aria-label="הוספת ילדים עד גיל 18">+</button>
             </div>
           </div>
 
           <div class="group">
-            <div class="group-title">
-              <span>ילדים מגיל 18 ומעלה</span>
-            </div>
+            <div class="group-title"><span>ילדים מגיל 18+</span></div>
             <div class="stepper">
               <button type="button" data-step="adult" data-dir="-1" aria-label="הפחתת ילדים מעל גיל 18">−</button>
               <div class="stepper-value">
                 <span class="stepper-number" id="kidsAdultValue">0</span>
-                <span class="hint">ילדים מעל גיל 18</span>
+                <span class="hint">מגיל 18</span>
               </div>
               <button type="button" data-step="adult" data-dir="1" aria-label="הוספת ילדים מעל גיל 18">+</button>
             </div>
@@ -568,19 +522,21 @@
           </div>
 
           <div class="income-card">
-            <div class="group-title">
-              <span>הכנסה חייבת במס (חודשית)</span>
-            </div>
+            <div class="group-title"><span>הכנסה חייבת במס (חודשית)</span></div>
             <div class="income-display">
-              <div class="income-value" id="incomeDisplay">₪ 22,000</div>
-              <input class="income-edit" id="incomeInput" inputmode="numeric" type="text" aria-label="הכנסה נטו חודשית">
+              <div class="income-value" id="incomeDisplay">₪ 22,000</div>
+              <input class="income-edit" id="incomeInput" inputmode="numeric" type="text" aria-label="הכנסה חודשית">
             </div>
-            <div class="range-wrap">
-              <input id="incomeRange" type="range" min="15000" max="45000" step="500" value="22000" aria-label="בחירת הכנסה">
-              <div class="range-legend">
-                <span>15,000 ₪</span>
-                <span>45,000 ₪</span>
+            <div class="income-stepper-row">
+              <button class="income-step-btn" id="incomeMinusBtn" type="button" aria-label="הפחתת 500₪">−</button>
+              <div class="range-wrap">
+                <input id="incomeRange" type="range" min="10000" max="45000" step="500" value="22000" aria-label="בחירת הכנסה">
+                <div class="range-legend">
+                  <span>10,000 ₪</span>
+                  <span>45,000 ₪</span>
+                </div>
               </div>
+              <button class="income-step-btn" id="incomePlusBtn" type="button" aria-label="הוספת 500₪">+</button>
             </div>
           </div>
         </div>
@@ -590,30 +546,30 @@
         <section class="stats">
           <div class="stats-grid">
             <article class="stat-card old">
-              <span class="stat-label">סך מס חודשי · מנגנון ישן</span>
-              <strong class="stat-value" id="oldTaxValue">₪ 0</strong>
+              <span class="stat-label">מס חודשי · מנגנון ישן</span>
+              <strong class="stat-value" id="oldTaxValue">₪ 0</strong>
               <div class="mini">
                 <span class="hint">מס לנקודה</span>
-                <strong id="oldTaxPerPointValue">₪ 0</strong>
+                <strong id="oldTaxPerPointValue">₪ 0</strong>
               </div>
             </article>
 
             <article class="stat-card new">
-              <span class="stat-label">סך מס חודשי · מנגנון מעודכן</span>
-              <strong class="stat-value" id="newTaxValue">₪ 0</strong>
+              <span class="stat-label">מס חודשי · מנגנון מעודכן</span>
+              <strong class="stat-value" id="newTaxValue">₪ 0</strong>
               <div class="mini">
                 <span class="hint">מס לנקודה</span>
-                <strong id="newTaxPerPointValue">₪ 0</strong>
+                <strong id="newTaxPerPointValue">₪ 0</strong>
               </div>
             </article>
 
             <article class="stat-card save" id="deltaCard">
               <span class="stat-label" id="deltaLabel">חיסכון למשק הבית</span>
-              <strong class="stat-value" id="monthlySavingsValue">₪ 0</strong>
+              <strong class="stat-value" id="monthlySavingsValue">₪ 0</strong>
               <div class="stat-subgrid">
                 <div class="mini">
                   <span class="hint" id="yearlyLabel">חיסכון שנתי</span>
-                  <strong id="yearlySavingsValue">₪ 0</strong>
+                  <strong id="yearlySavingsValue">₪ 0</strong>
                 </div>
                 <div class="mini">
                   <span class="hint" id="reductionLabel">% ירידה</span>
@@ -625,33 +581,100 @@
         </section>
 
         <section class="panel summary">
-          <div><strong>נקודות תקן:</strong> <span id="pointsValue">0.0</span></div>
-          <div><strong>הכנסה לנקודה:</strong> <span id="incomePerPointValue">₪ 0</span></div>
-          <div><strong>מס קבוע:</strong> <span id="fixedTaxValue">₪ 0</span> למשק הבית שנבחר</div>
+          <div><strong>נקודות:</strong> <span id="pointsValue">0.0</span></div>
+          <div><strong>הכנסה לנקודה:</strong> <span id="incomePerPointValue">₪ 0</span></div>
+          <div><strong>מס קבוע:</strong> <span id="fixedTaxValue">₪ 0</span></div>
         </section>
 
         <section class="panel chart-panel">
           <div class="group-title">
-            <span>עקומות מס פרוגרסיביות לפי הרכב משק הבית שנבחר</span>
-            <span class="hint">אזור ירוק = החיסכון הישיר למשק הבית עבור נקודות התקן שנבחרו</span>
+            <span>עקומות מס לפי הרכב המשק הנבחר</span>
           </div>
           <div class="legend">
             <span class="legend-item"><span class="swatch" style="background: var(--red);"></span>מנגנון ישן</span>
             <span class="legend-item"><span class="swatch" style="background: var(--blue);"></span>מנגנון מעודכן</span>
-            <span class="legend-item"><span class="swatch" style="background: rgba(23,155,103,.34);"></span>אזור חיסכון</span>
+            <span class="legend-item"><span class="swatch" style="background: rgba(23,155,103,.4);"></span>חיסכון</span>
           </div>
           <div class="chart-box">
-            <svg id="taxChart" viewBox="0 0 760 340" aria-labelledby="chartTitle chartDesc" role="img">
-              <title id="chartTitle">גרף השוואת מס איזון לפי הרכב משק הבית</title>
-              <desc id="chartDesc">גרף SVG המשווה בין סך המס במנגנון הישן לבין המנגנון המעודכן עבור ההכנסה ונקודות התקן שנבחרו.</desc>
+            <svg id="taxChart" viewBox="0 0 760 320" aria-labelledby="chartTitle chartDesc" role="img">
+              <title id="chartTitle">גרף השוואת מס איזון</title>
+              <desc id="chartDesc">גרף SVG המשווה בין סך המס במנגנון הישן למעודכן.</desc>
             </svg>
+          </div>
+          <div class="chart-actions">
+            <button class="btn btn-green" id="snapshotBtn" type="button">📥 שמור תמונת סיכום</button>
+            <button class="btn btn-secondary" id="showTablesBtn" type="button">📊 ראה טבלאות חישוב</button>
           </div>
         </section>
       </div>
     </section>
 
-    <p class="footer-note">החישוב מבוסס על כללי נקודות התקן ומדרגות המס שסופקו. לא כולל קרן עזרה הדדית. מומלץ לאמת מול הנהלת הקיבוץ לפני קבלת החלטה.</p>
+    <p class="footer-note">החישוב מבוסס על נקודות התקן ומדרגות המס שסופקו · לא כולל קרן עזרה הדדית · מומלץ לאמת מול הנהלת הקיבוץ.</p>
   </main>
+
+  <!-- Tax tables modal -->
+  <div class="modal-overlay" id="tablesModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <h2 id="modalTitle" style="font-size:1.15rem;font-weight:900;">טבלאות מדרגות המס</h2>
+        <button class="modal-close" id="closeModal" type="button" aria-label="סגירה">✕</button>
+      </div>
+      <p style="font-size:0.85rem;color:var(--muted);line-height:1.55;">הטבלאות מציגות את שיעורי המס על <strong>הכנסה לנקודה</strong> (= הכנסה הכוללת ÷ נקודות תקן). המס הסופי = מס לנקודה × נקודות + מס קבוע.</p>
+
+      <div>
+        <div class="table-section-title"><span class="dot" style="background:var(--red);"></span>מנגנון ישן – מדרגות מס לנקודה</div>
+        <div class="tax-table-wrap">
+          <table class="tax-table">
+            <thead>
+              <tr>
+                <th>מ-</th>
+                <th>עד-</th>
+                <th>שיעור</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0 ₪</td><td>4,000 ₪</td><td>0%</td></tr>
+              <tr><td>4,001 ₪</td><td>4,250 ₪</td><td>30%</td></tr>
+              <tr><td>4,251 ₪</td><td>4,500 ₪</td><td>34%</td></tr>
+              <tr><td>4,501 ₪</td><td>4,750 ₪</td><td>37%</td></tr>
+              <tr><td>4,751 ₪</td><td>5,000 ₪</td><td>40%</td></tr>
+              <tr><td>5,001 ₪</td><td>5,250 ₪</td><td>44%</td></tr>
+              <tr><td>5,251 ₪</td><td>5,500 ₪</td><td>48%</td></tr>
+              <tr><td>5,501 ₪</td><td>ומעלה</td><td>50%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div class="table-section-title"><span class="dot" style="background:var(--blue);"></span>מנגנון מעודכן – מדרגות מס לנקודה</div>
+        <div class="tax-table-wrap">
+          <table class="tax-table">
+            <thead>
+              <tr>
+                <th>מ-</th>
+                <th>עד-</th>
+                <th>שיעור</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>0 ₪</td><td>4,000 ₪</td><td>0%</td></tr>
+              <tr><td>4,001 ₪</td><td>5,000 ₪</td><td>30%</td></tr>
+              <tr><td>5,001 ₪</td><td>6,000 ₪</td><td>34%</td></tr>
+              <tr><td>6,001 ₪</td><td>7,000 ₪</td><td>37%</td></tr>
+              <tr><td>7,001 ₪</td><td>8,000 ₪</td><td>40%</td></tr>
+              <tr><td>8,001 ₪</td><td>ומעלה</td><td>44%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="background:rgba(44,103,242,0.07);border-radius:14px;padding:12px 16px;font-size:0.84rem;line-height:1.6;color:var(--muted);">
+        <strong style="color:var(--text);">מס קבוע:</strong> זוג חברים – 2,000 ₪ | חבר יחיד / חבר בודד בזוג – 1,000 ₪<br>
+        <strong style="color:var(--text);">החישוב לא כולל</strong> קרן עזרה הדדית.
+      </div>
+    </div>
+  </div>
 
   <script>
     const HOUSEHOLDS = [
@@ -668,15 +691,14 @@
     };
 
     const LIMITS = {
-      incomeMin: 15000,
+      incomeMin: 10000,
       incomeRangeMax: 45000,
       incomeAbsoluteMax: 70000,
       kidsMax: 15
     };
     const FIXED_TAX_COUPLE = 2000;
     const FIXED_TAX_SINGLE = 1000;
-    const CHART_SAMPLE_COUNT = 36;
-    const CHART_X_LABELS = [LIMITS.incomeMin, 25000, 35000, LIMITS.incomeRangeMax, 55000, LIMITS.incomeAbsoluteMax];
+    const CHART_SAMPLE_COUNT = 60;
 
     const state = { ...DEFAULT_STATE };
     let isEditingIncome = false;
@@ -706,7 +728,13 @@
       taxChart: document.getElementById("taxChart"),
       shareBtn: document.getElementById("shareBtn"),
       resetBtn: document.getElementById("resetBtn"),
-      liveScoreValue: document.getElementById("liveScoreValue")
+      liveScoreValue: document.getElementById("liveScoreValue"),
+      snapshotBtn: document.getElementById("snapshotBtn"),
+      showTablesBtn: document.getElementById("showTablesBtn"),
+      tablesModal: document.getElementById("tablesModal"),
+      closeModal: document.getElementById("closeModal"),
+      incomeMinusBtn: document.getElementById("incomeMinusBtn"),
+      incomePlusBtn: document.getElementById("incomePlusBtn")
     };
 
     const currencyFormatter = new Intl.NumberFormat("he-IL", {
@@ -719,10 +747,11 @@
       maximumFractionDigits: 1,
       minimumFractionDigits: 1
     });
+
     const themeStyles = getComputedStyle(document.documentElement);
     const chartColors = {
-      red: themeStyles.getPropertyValue("--red").trim(),
-      blue: themeStyles.getPropertyValue("--blue").trim()
+      red: themeStyles.getPropertyValue("--red").trim() || "#df5a6f",
+      blue: themeStyles.getPropertyValue("--blue").trim() || "#2c67f2"
     };
 
     function clamp(value, min, max) {
@@ -753,8 +782,9 @@
       return roundToOne(base + getKidsPoints(state.kidsUnder18, state.kids18Plus));
     }
 
-    function getFixedHouseholdTax(householdType = state.householdType) {
-      return householdType === "couple" ? FIXED_TAX_COUPLE : FIXED_TAX_SINGLE;
+    function getFixedHouseholdTax(householdType) {
+      const type = householdType != null ? householdType : state.householdType;
+      return type === "couple" ? FIXED_TAX_COUPLE : FIXED_TAX_SINGLE;
     }
 
     function oldTaxPerPoint(x) {
@@ -782,18 +812,9 @@
       const fixedTax = getFixedHouseholdTax();
       if (points <= 0) {
         return {
-          points: 0,
-          incomePerPoint: 0,
-          oldPointTax: 0,
-          newPointTax: 0,
-          oldTotal: fixedTax,
-          newTotal: fixedTax,
-          delta: 0,
-          savings: 0,
-          extraCost: 0,
-          yearlySavings: 0,
-          yearlyDelta: 0,
-          reduction: 0
+          points: 0, incomePerPoint: 0, oldPointTax: 0, newPointTax: 0,
+          oldTotal: fixedTax, newTotal: fixedTax, delta: 0, savings: 0,
+          extraCost: 0, yearlySavings: 0, yearlyDelta: 0, reduction: 0
         };
       }
       const incomePerPoint = state.income / points;
@@ -807,18 +828,9 @@
       const reduction = oldTotal > 0 ? (delta / oldTotal) * 100 : 0;
 
       return {
-        points,
-        incomePerPoint,
-        oldPointTax,
-        newPointTax,
-        oldTotal,
-        newTotal,
-        delta,
-        savings,
-        extraCost,
-        yearlySavings: savings * 12,
-        yearlyDelta: delta * 12,
-        reduction
+        points, incomePerPoint, oldPointTax, newPointTax,
+        oldTotal, newTotal, delta, savings, extraCost,
+        yearlySavings: savings * 12, yearlyDelta: delta * 12, reduction
       };
     }
 
@@ -862,112 +874,156 @@
       els.incomeRange.value = String(clamp(state.income, LIMITS.incomeMin, LIMITS.incomeRangeMax));
     }
 
+    /* ── Improved SVG chart ── */
     function renderChart(metrics) {
+      const svg = els.taxChart;
       if (metrics.points <= 0) {
-        els.taxChart.innerHTML = "";
+        svg.innerHTML = "";
         return;
       }
-      const svg = els.taxChart;
-      const width = 760;
-      const height = 340;
-      const padding = { top: 20, right: 16, bottom: 40, left: 64 };
-      const chartW = width - padding.left - padding.right;
-      const chartH = height - padding.top - padding.bottom;
-      const maxIncome = LIMITS.incomeAbsoluteMax;
-      const points = metrics.points;
-      const fixedTax = getFixedHouseholdTax();
 
-      const samples = Array.from(
-        { length: CHART_SAMPLE_COUNT },
-        (_, i) => LIMITS.incomeMin + ((maxIncome - LIMITS.incomeMin) * i) / (CHART_SAMPLE_COUNT - 1)
+      const W = 760, H = 320;
+      const pad = { top: 28, right: 20, bottom: 46, left: 72 };
+      const cW = W - pad.left - pad.right;
+      const cH = H - pad.top - pad.bottom;
+      const maxIncome = LIMITS.incomeAbsoluteMax;
+      const fixedTax = getFixedHouseholdTax();
+      const pts = metrics.points;
+
+      const samples = Array.from({ length: CHART_SAMPLE_COUNT }, (_, i) =>
+        LIMITS.incomeMin + ((maxIncome - LIMITS.incomeMin) * i) / (CHART_SAMPLE_COUNT - 1)
       );
-      const chartData = samples.map((income) => {
-        const perPoint = income / points;
-        return {
-          income,
-          oldTotal: oldTaxPerPoint(perPoint) * points + fixedTax,
-          newTotal: newTaxPerPoint(perPoint) * points + fixedTax
-        };
+      const data = samples.map((inc) => {
+        const pp = inc / pts;
+        return { inc, old: oldTaxPerPoint(pp) * pts + fixedTax, nw: newTaxPerPoint(pp) * pts + fixedTax };
       });
 
-      const currentOld = metrics.oldTotal;
-      const currentNew = metrics.newTotal;
-      const maxSeriesValue = chartData.reduce((maxValue, item) => {
-        return Math.max(maxValue, item.oldTotal, item.newTotal);
-      }, Math.max(currentOld, currentNew));
-      const maxY = maxSeriesValue * 1.08;
+      const maxY = data.reduce((m, d) => Math.max(m, d.old, d.nw), 0) * 1.1;
 
-      const scaleX = (income) => padding.left + ((income - LIMITS.incomeMin) / (maxIncome - LIMITS.incomeMin)) * chartW;
-      const scaleY = (value) => padding.top + chartH - (value / maxY) * chartH;
+      const sx = (inc) => pad.left + ((inc - LIMITS.incomeMin) / (maxIncome - LIMITS.incomeMin)) * cW;
+      const sy = (v) => pad.top + cH - (v / maxY) * cH;
 
-      const oldPath = chartData.map((item, index) => `${index === 0 ? "M" : "L"} ${scaleX(item.income).toFixed(2)} ${scaleY(item.oldTotal).toFixed(2)}`).join(" ");
-      const newPath = chartData.map((item, index) => `${index === 0 ? "M" : "L"} ${scaleX(item.income).toFixed(2)} ${scaleY(item.newTotal).toFixed(2)}`).join(" ");
-      const areaPaths = [];
-      for (let i = 0; i < chartData.length - 1; i += 1) {
-        const start = chartData[i];
-        const end = chartData[i + 1];
-        const startDiff = start.oldTotal - start.newTotal;
-        const endDiff = end.oldTotal - end.newTotal;
-        const x1 = scaleX(start.income);
-        const x2 = scaleX(end.income);
-        const oldY1 = scaleY(start.oldTotal);
-        const oldY2 = scaleY(end.oldTotal);
-        const newY1 = scaleY(start.newTotal);
-        const newY2 = scaleY(end.newTotal);
+      // Y grid lines (5 steps)
+      const ySteps = 5;
+      const yGridLines = Array.from({ length: ySteps + 1 }, (_, i) => (maxY / ySteps) * i);
 
-        if (startDiff <= 0 && endDiff <= 0) continue;
+      // X labels – evenly spaced
+      const xLabels = [10000, 20000, 30000, 40000, 55000, 70000].filter(v => v >= LIMITS.incomeMin && v <= maxIncome);
 
-        if (startDiff > 0 && endDiff > 0) {
-          areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
+      // Build savings area path segments
+      const areaParts = [];
+      for (let i = 0; i < data.length - 1; i++) {
+        const a = data[i], b = data[i + 1];
+        const dA = a.old - a.nw, dB = b.old - b.nw;
+        if (dA <= 0 && dB <= 0) continue;
+        if (dA > 0 && dB > 0) {
+          areaParts.push(`M ${sx(a.inc).toFixed(1)} ${sy(a.old).toFixed(1)} L ${sx(b.inc).toFixed(1)} ${sy(b.old).toFixed(1)} L ${sx(b.inc).toFixed(1)} ${sy(b.nw).toFixed(1)} L ${sx(a.inc).toFixed(1)} ${sy(a.nw).toFixed(1)} Z`);
           continue;
         }
-
-        const ratio = startDiff / (startDiff - endDiff);
-        const crossX = x1 + ((x2 - x1) * ratio);
-        const crossY = oldY1 + ((oldY2 - oldY1) * ratio);
-
-        if (startDiff > 0) {
-          areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
-        } else if (endDiff > 0) {
-          areaPaths.push(`M ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} Z`);
+        const ratio = dA / (dA - dB);
+        const cx = sx(a.inc) + (sx(b.inc) - sx(a.inc)) * ratio;
+        const cy = sy(a.old) + (sy(b.old) - sy(a.old)) * ratio;
+        if (dA > 0) {
+          areaParts.push(`M ${sx(a.inc).toFixed(1)} ${sy(a.old).toFixed(1)} L ${cx.toFixed(1)} ${cy.toFixed(1)} L ${sx(a.inc).toFixed(1)} ${sy(a.nw).toFixed(1)} Z`);
+        } else {
+          areaParts.push(`M ${cx.toFixed(1)} ${cy.toFixed(1)} L ${sx(b.inc).toFixed(1)} ${sy(b.old).toFixed(1)} L ${sx(b.inc).toFixed(1)} ${sy(b.nw).toFixed(1)} Z`);
         }
       }
-      const trackerX = scaleX(state.income);
-      const trackerOldY = scaleY(currentOld);
-      const trackerNewY = scaleY(currentNew);
 
-      const yGrid = Array.from({ length: 5 }, (_, i) => (maxY / 4) * i);
+      // Smooth curve helper (Catmull-Rom simplified as straight for SVG compatibility)
+      const pathD = (key) => data.map((d, i) => `${i === 0 ? "M" : "L"} ${sx(d.inc).toFixed(1)} ${sy(d[key]).toFixed(1)}`).join(" ");
+
+      // Current income tracker
+      const tx = sx(state.income);
+      const toy = sy(metrics.oldTotal);
+      const tny = sy(metrics.newTotal);
+
+      // Tooltip box placement
+      const tipX = Math.min(W - 210, Math.max(18, tx - 105));
+      const tipY = Math.max(18, Math.min(H - 100, tny - 80));
+
+      // Savings band label
+      const midInc = (LIMITS.incomeMin + maxIncome) / 2;
+      const midOld = (oldTaxPerPoint(midInc / pts) * pts + fixedTax);
+      const midNew = (newTaxPerPoint(midInc / pts) * pts + fixedTax);
+      const bandLabelY = midOld > midNew ? (sy(midOld) + sy(midNew)) / 2 : null;
+
       svg.innerHTML = `
         <defs>
-          <linearGradient id="fillArea" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stop-color="rgba(23,155,103,0.36)"></stop>
-            <stop offset="100%" stop-color="rgba(23,155,103,0.14)"></stop>
+          <linearGradient id="areaGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="rgba(23,155,103,0.42)"/>
+            <stop offset="100%" stop-color="rgba(23,155,103,0.08)"/>
           </linearGradient>
+          <linearGradient id="redGrad" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0%" stop-color="#df5a6f"/>
+            <stop offset="100%" stop-color="#c94466"/>
+          </linearGradient>
+          <linearGradient id="blueGrad" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0%" stop-color="#4a83f5"/>
+            <stop offset="100%" stop-color="#2c67f2"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(15,23,42,0.18)"/>
+          </filter>
         </defs>
-        <rect x="0" y="0" width="${width}" height="${height}" rx="24" fill="rgba(255,255,255,0.28)"></rect>
-        ${yGrid.map((value) => `
-          <g>
-            <line x1="${padding.left}" x2="${width - padding.right}" y1="${scaleY(value)}" y2="${scaleY(value)}" stroke="rgba(148,163,184,0.32)" stroke-width="1.2"></line>
-            <text x="${padding.left - 12}" y="${scaleY(value) + 5}" font-size="13" font-weight="600" fill="#52627c" text-anchor="end">${Math.round(value).toLocaleString("he-IL")}</text>
-          </g>
+
+        <!-- Background -->
+        <rect x="0" y="0" width="${W}" height="${H}" rx="20" fill="rgba(248,251,255,0.6)"/>
+
+        <!-- Y grid lines -->
+        ${yGridLines.map(v => `
+          <line x1="${pad.left}" x2="${W - pad.right}" y1="${sy(v).toFixed(1)}" y2="${sy(v).toFixed(1)}"
+                stroke="rgba(148,163,184,0.28)" stroke-width="1" stroke-dasharray="${v === 0 ? '' : '4 3'}"/>
+          <text x="${pad.left - 10}" y="${(sy(v) + 4).toFixed(1)}" font-size="11.5" font-weight="600"
+                fill="#7a8fa8" text-anchor="end">${Math.round(v / 100) * 100 >= 1000 ? (Math.round(v / 100) / 10).toFixed(0) + 'k' : Math.round(v)}</text>
         `).join("")}
-        ${CHART_X_LABELS.map((income) => `
-          <g>
-            <line x1="${scaleX(income)}" x2="${scaleX(income)}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="rgba(148,163,184,0.16)" stroke-width="1"></line>
-            <text x="${scaleX(income)}" y="${height - 12}" font-size="13" font-weight="600" fill="#52627c" text-anchor="middle">${income.toLocaleString("he-IL")}</text>
-          </g>
+
+        <!-- X grid lines -->
+        ${xLabels.map(inc => `
+          <line x1="${sx(inc).toFixed(1)}" x2="${sx(inc).toFixed(1)}" y1="${pad.top}" y2="${H - pad.bottom}"
+                stroke="rgba(148,163,184,0.18)" stroke-width="1"/>
+          <text x="${sx(inc).toFixed(1)}" y="${H - 14}" font-size="11" font-weight="600"
+                fill="#7a8fa8" text-anchor="middle">${(inc / 1000).toFixed(0)}k</text>
         `).join("")}
-        ${areaPaths.map((path) => `<path d="${path}" fill="url(#fillArea)"></path>`).join("")}
-        <path d="${oldPath}" fill="none" stroke="${chartColors.red}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"></path>
-        <path d="${newPath}" fill="none" stroke="${chartColors.blue}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 8"></path>
-        <line x1="${trackerX}" x2="${trackerX}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="#0f172a" stroke-width="2" stroke-dasharray="4 6"></line>
-        <circle cx="${trackerX}" cy="${trackerOldY}" r="7.5" fill="${chartColors.red}" stroke="rgba(255,255,255,0.95)" stroke-width="2"></circle>
-        <circle cx="${trackerX}" cy="${trackerNewY}" r="7.5" fill="${chartColors.blue}" stroke="rgba(255,255,255,0.95)" stroke-width="2"></circle>
-        <g transform="translate(${Math.min(width - 224, Math.max(18, trackerX - 112))}, ${Math.max(18, Math.min(height - 102, trackerNewY - 74))})">
-          <rect width="206" height="78" rx="18" fill="rgba(255,255,255,0.97)" stroke="rgba(148,163,184,0.26)"></rect>
-          <text x="16" y="24" font-size="14" font-weight="800" fill="#10203a">הכנסה: ${formatCurrency(state.income)}</text>
-          <text x="16" y="46" font-size="13.5" font-weight="600" fill="#df5a6f">ישן: ${formatCurrency(currentOld)}</text>
-          <text x="16" y="66" font-size="13.5" font-weight="600" fill="#2c67f2">מעודכן: ${formatCurrency(currentNew)}</text>
+
+        <!-- X axis label -->
+        <text x="${pad.left + cW / 2}" y="${H - 2}" font-size="11" fill="#9aa5b4" text-anchor="middle">הכנסה (₪)</text>
+
+        <!-- Savings area -->
+        ${areaParts.map(p => `<path d="${p}" fill="url(#areaGrad)"/>`).join("")}
+
+        <!-- Savings band label -->
+        ${bandLabelY !== null ? `<text x="${sx(midInc).toFixed(1)}" y="${bandLabelY.toFixed(1)}" font-size="11" font-weight="700" fill="rgba(23,155,103,0.85)" text-anchor="middle">חיסכון</text>` : ""}
+
+        <!-- Old line -->
+        <path d="${pathD("old")}" fill="none" stroke="url(#redGrad)" stroke-width="3.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- New line -->
+        <path d="${pathD("nw")}" fill="none" stroke="url(#blueGrad)" stroke-width="3.5"
+              stroke-linecap="round" stroke-linejoin="round"/>
+
+        <!-- Current income vertical line -->
+        <line x1="${tx.toFixed(1)}" x2="${tx.toFixed(1)}" y1="${pad.top}" y2="${H - pad.bottom}"
+              stroke="rgba(15,23,42,0.35)" stroke-width="1.5" stroke-dasharray="5 5"/>
+
+        <!-- Dots at current income -->
+        <circle cx="${tx.toFixed(1)}" cy="${toy.toFixed(1)}" r="7" fill="${chartColors.red}"
+                stroke="white" stroke-width="2.5" filter="url(#glow)"/>
+        <circle cx="${tx.toFixed(1)}" cy="${tny.toFixed(1)}" r="7" fill="${chartColors.blue}"
+                stroke="white" stroke-width="2.5" filter="url(#glow)"/>
+
+        <!-- Tooltip -->
+        <g transform="translate(${tipX}, ${tipY})" filter="url(#shadow)">
+          <rect width="200" height="84" rx="16" fill="rgba(255,255,255,0.97)" stroke="rgba(148,163,184,0.22)" stroke-width="1"/>
+          <text x="14" y="24" font-size="13" font-weight="800" fill="#10203a">${formatCurrency(state.income)}</text>
+          <text x="14" y="44" font-size="12.5" font-weight="700" fill="#df5a6f">ישן: ${formatCurrency(metrics.oldTotal)}</text>
+          <text x="14" y="62" font-size="12.5" font-weight="700" fill="#2c67f2">חדש: ${formatCurrency(metrics.newTotal)}</text>
+          <text x="14" y="79" font-size="11.5" font-weight="700" fill="#179b67">חיסכון: ${formatCurrency(Math.max(0, metrics.delta))}</text>
         </g>
       `;
     }
@@ -998,8 +1054,8 @@
       const hasSavings = metrics.delta >= 0;
       els.deltaCard.classList.toggle("old", !hasSavings);
       els.deltaCard.classList.toggle("save", hasSavings);
-      els.deltaLabel.textContent = hasSavings ? "חיסכון למשק הבית" : "תוספת עלות למשק הבית";
-      els.yearlyLabel.textContent = hasSavings ? "חיסכון שנתי" : "תוספת עלות שנתית";
+      els.deltaLabel.textContent = hasSavings ? "חיסכון למשק הבית" : "תוספת עלות";
+      els.yearlyLabel.textContent = hasSavings ? "חיסכון שנתי" : "עלות שנתית";
       els.reductionLabel.textContent = hasSavings ? "% ירידה" : "% שינוי";
       els.monthlySavingsValue.textContent = formatCurrency(hasSavings ? metrics.savings : metrics.extraCost);
       els.yearlySavingsValue.textContent = formatCurrency(Math.abs(metrics.yearlyDelta));
@@ -1013,6 +1069,11 @@
       render();
     }
 
+    /* ── Income +/- buttons ── */
+    els.incomeMinusBtn.addEventListener("click", () => setIncome(state.income - 500));
+    els.incomePlusBtn.addEventListener("click", () => setIncome(state.income + 500));
+
+    /* ── Kids steppers ── */
     document.addEventListener("click", (event) => {
       const button = event.target.closest("[data-step]");
       if (!button) return;
@@ -1025,6 +1086,7 @@
       render();
     });
 
+    /* ── Income range ── */
     els.incomeRange.addEventListener("input", (event) => {
       setIncome(Number(event.target.value));
     });
@@ -1037,10 +1099,7 @@
 
     els.incomeInput.addEventListener("input", (event) => {
       const digits = event.target.value.replace(/[^\d]/g, "");
-      if (!digits) {
-        event.target.value = "";
-        return;
-      }
+      if (!digits) { event.target.value = ""; return; }
       const nextIncome = Number(digits);
       event.target.value = digits;
       if (nextIncome >= LIMITS.incomeMin && nextIncome <= LIMITS.incomeAbsoluteMax) {
@@ -1056,19 +1115,12 @@
     });
 
     els.incomeInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        els.incomeInput.blur();
-      }
+      if (event.key === "Enter") { event.preventDefault(); els.incomeInput.blur(); }
     });
 
+    /* ── Share ── */
     els.shareBtn.addEventListener("click", async () => {
-      const payload = {
-        title: document.title,
-        text: "מחשבון מס איזון להשוואה בין המנגנון הישן למעודכן",
-        url: window.location.href
-      };
-
+      const payload = { title: document.title, text: "מחשבון מס איזון להשוואה בין המנגנון הישן למעודכן", url: window.location.href };
       try {
         if (navigator.share) {
           await navigator.share(payload);
@@ -1079,15 +1131,161 @@
           window.prompt("העתיקו את הקישור:", window.location.href);
         }
       } catch (error) {
-        if (error?.name !== "AbortError") {
-          window.alert("לא הצלחנו לשתף כרגע.");
-        }
+        if (error?.name !== "AbortError") window.alert("לא הצלחנו לשתף כרגע.");
       }
     });
 
+    /* ── Reset ── */
     els.resetBtn.addEventListener("click", () => {
       Object.assign(state, DEFAULT_STATE);
       render();
+    });
+
+    /* ── Tax tables modal ── */
+    els.showTablesBtn.addEventListener("click", () => {
+      els.tablesModal.classList.add("open");
+      document.body.style.overflow = "hidden";
+    });
+
+    function closeModal() {
+      els.tablesModal.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    els.closeModal.addEventListener("click", closeModal);
+    els.tablesModal.addEventListener("click", (e) => { if (e.target === els.tablesModal) closeModal(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
+
+    /* ── Snapshot / Download image ── */
+    els.snapshotBtn.addEventListener("click", () => {
+      const metrics = calculate();
+      const householdLabel = HOUSEHOLDS.find(h => h.key === state.householdType)?.label ?? "";
+      const hasSavings = metrics.delta >= 0;
+
+      // Build a canvas-based summary image
+      const canvas = document.createElement("canvas");
+      const scale = 2; // retina
+      canvas.width = 640 * scale;
+      canvas.height = 360 * scale;
+      canvas.style.width = "640px";
+      canvas.style.height = "360px";
+      const ctx = canvas.getContext("2d");
+      ctx.scale(scale, scale);
+
+      // Background gradient
+      const bgGrad = ctx.createLinearGradient(0, 0, 640, 360);
+      bgGrad.addColorStop(0, "#f0f6ff");
+      bgGrad.addColorStop(1, "#e8f4ff");
+      ctx.fillStyle = bgGrad;
+      ctx.roundRect(0, 0, 640, 360, 24);
+      ctx.fill();
+
+      // Header bar
+      const headerGrad = ctx.createLinearGradient(0, 0, 640, 0);
+      headerGrad.addColorStop(0, "#2c67f2");
+      headerGrad.addColorStop(1, "#1746b7");
+      ctx.fillStyle = headerGrad;
+      ctx.roundRect(0, 0, 640, 68, [24, 24, 0, 0]);
+      ctx.fill();
+
+      ctx.fillStyle = "#fff";
+      ctx.font = `bold 18px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.textAlign = "right";
+      ctx.fillText("מחשבון מס איזון – קיבוץ", 620, 30);
+      ctx.font = `13px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillStyle = "rgba(255,255,255,0.8)";
+      ctx.fillText("לא כולל קרן עזרה הדדית", 620, 52);
+
+      // Helper to draw a card
+      function drawCard(x, y, w, h, bgColor, borderColor) {
+        ctx.save();
+        ctx.fillStyle = bgColor;
+        ctx.strokeStyle = borderColor;
+        ctx.lineWidth = 1;
+        ctx.roundRect(x, y, w, h, 16);
+        ctx.fill();
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Info row
+      const labelColor = "#5f6f8a";
+      const valueColor = "#10203a";
+
+      // Card 1: Household type + income
+      drawCard(20, 84, 280, 120, "rgba(255,255,255,0.9)", "rgba(148,163,184,0.3)");
+      ctx.textAlign = "right";
+      ctx.fillStyle = labelColor;
+      ctx.font = `600 12px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillText("סוג משק בית", 286, 108);
+      ctx.fillStyle = valueColor;
+      ctx.font = `bold 15px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillText(householdLabel, 286, 128);
+      ctx.fillStyle = labelColor;
+      ctx.font = `600 12px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillText("הכנסה חודשית", 286, 158);
+      ctx.fillStyle = valueColor;
+      ctx.font = `bold 15px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillText(formatCurrency(state.income), 286, 178);
+
+      // Card 2: Old tax
+      drawCard(320, 84, 140, 120, "rgba(255,240,244,0.95)", "rgba(223,90,111,0.25)");
+      ctx.fillStyle = "#df5a6f";
+      ctx.font = `700 11px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.textAlign = "right";
+      ctx.fillText("מס ישן", 446, 108);
+      ctx.fillStyle = "#c0354d";
+      ctx.font = `bold 19px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillText(formatCurrency(metrics.oldTotal), 446, 136);
+      ctx.fillStyle = labelColor;
+      ctx.font = `600 11px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillText("לחודש", 446, 158);
+
+      // Card 3: New tax
+      drawCard(472, 84, 148, 120, "rgba(240,245,255,0.95)", "rgba(44,103,242,0.25)");
+      ctx.fillStyle = "#2c67f2";
+      ctx.font = `700 11px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.textAlign = "right";
+      ctx.fillText("מס מעודכן", 606, 108);
+      ctx.fillStyle = "#1746b7";
+      ctx.font = `bold 19px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillText(formatCurrency(metrics.newTotal), 606, 136);
+      ctx.fillStyle = labelColor;
+      ctx.font = `600 11px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillText("לחודש", 606, 158);
+
+      // Savings card
+      const saveBg = hasSavings ? "rgba(234,252,244,0.97)" : "rgba(255,240,244,0.97)";
+      const saveBorder = hasSavings ? "rgba(23,155,103,0.3)" : "rgba(223,90,111,0.3)";
+      drawCard(20, 220, 600, 110, saveBg, saveBorder);
+
+      ctx.fillStyle = hasSavings ? "#179b67" : "#df5a6f";
+      ctx.font = `700 13px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.textAlign = "right";
+      ctx.fillText(hasSavings ? "חיסכון למשק הבית" : "תוספת עלות", 606, 248);
+
+      ctx.font = `900 28px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillText(formatCurrency(hasSavings ? metrics.savings : metrics.extraCost), 606, 282);
+
+      ctx.fillStyle = labelColor;
+      ctx.font = `600 13px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.fillText(`שנתי: ${formatCurrency(Math.abs(metrics.yearlyDelta))}  ·  ${Math.abs(metrics.reduction).toFixed(1)}% ${hasSavings ? "ירידה" : "שינוי"}`, 606, 310);
+
+      // Footer
+      ctx.fillStyle = "rgba(95,111,138,0.7)";
+      ctx.font = `500 10px -apple-system, BlinkMacSystemFont, Arial`;
+      ctx.textAlign = "center";
+      ctx.fillText("לא כולל קרן עזרה הדדית · לאישור פנו להנהלת הקיבוץ", 320, 346);
+
+      // Trigger download
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `מס-איזון-${householdLabel}-${formatCurrency(state.income)}.png`;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+      }, "image/png");
     });
 
     render();
