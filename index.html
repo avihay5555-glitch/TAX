@@ -48,14 +48,14 @@
     }
 
     body {
-      padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+      padding: max(12px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom));
     }
 
     .app {
       width: min(100%, 1100px);
       margin: 0 auto;
       display: grid;
-      gap: 16px;
+      gap: 12px;
     }
 
     .panel {
@@ -67,9 +67,9 @@
     }
 
     .hero {
-      padding: 20px;
+      padding: 18px;
       display: grid;
-      gap: 16px;
+      gap: 12px;
     }
 
     .hero-top {
@@ -134,21 +134,21 @@
 
     .grid {
       display: grid;
-      gap: 16px;
+      gap: 12px;
     }
 
     .controls {
-      padding: 18px;
+      padding: 16px;
     }
 
     .controls-grid {
       display: grid;
-      gap: 18px;
+      gap: 14px;
     }
 
     .group {
       display: grid;
-      gap: 10px;
+      gap: 8px;
     }
 
     .group-title {
@@ -169,7 +169,7 @@
     .segmented,
     .chips {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
@@ -239,12 +239,12 @@
     }
 
     .income-card {
-      padding: 18px;
+      padding: 16px;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 247, 255, 0.9));
       border-radius: 24px;
       border: 1px solid rgba(148, 163, 184, 0.2);
       display: grid;
-      gap: 14px;
+      gap: 12px;
     }
 
     .income-display {
@@ -319,22 +319,22 @@
 
     .stats {
       display: grid;
-      gap: 14px;
+      gap: 12px;
     }
 
     .stats-grid {
       display: grid;
-      gap: 14px;
+      gap: 12px;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     }
 
     .stat-card {
-      padding: 18px;
+      padding: 16px;
       border-radius: 24px;
       background: var(--surface-strong);
       border: 1px solid rgba(148, 163, 184, 0.2);
       display: grid;
-      gap: 10px;
+      gap: 8px;
       min-height: 160px;
     }
 
@@ -373,7 +373,7 @@
     }
 
     .summary {
-      padding: 18px;
+      padding: 16px;
       display: grid;
       gap: 8px;
       color: var(--muted);
@@ -385,16 +385,16 @@
     }
 
     .chart-panel {
-      padding: 18px;
+      padding: 16px;
       display: grid;
-      gap: 14px;
+      gap: 12px;
     }
 
     .chart-box {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 247, 255, 0.88));
       border-radius: 24px;
       border: 1px solid rgba(148, 163, 184, 0.18);
-      padding: 10px;
+      padding: 12px;
       overflow: hidden;
     }
 
@@ -402,14 +402,15 @@
       display: block;
       width: 100%;
       height: auto;
+      max-height: 340px;
     }
 
     .legend {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
       color: var(--muted);
-      font-size: 0.9rem;
+      font-size: 0.96rem;
     }
 
     .legend-item {
@@ -426,7 +427,8 @@
 
     .footer-note {
       color: var(--muted);
-      font-size: 0.85rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
       text-align: center;
       padding-bottom: env(safe-area-inset-bottom);
     }
@@ -495,12 +497,12 @@
         align-items: start;
       }
       .hero {
-        padding: 24px;
+        padding: 20px;
       }
       .controls,
       .chart-panel,
       .summary {
-        padding: 22px;
+        padding: 18px;
       }
     }
   </style>
@@ -625,7 +627,7 @@
         <section class="panel summary">
           <div><strong>נקודות תקן:</strong> <span id="pointsValue">0.0</span></div>
           <div><strong>הכנסה לנקודה:</strong> <span id="incomePerPointValue">₪ 0</span></div>
-          <div><strong>מס קבוע:</strong> 2,000 ₪ לכל משק בית</div>
+          <div><strong>מס קבוע:</strong> <span id="fixedTaxValue">₪ 0</span> למשק הבית שנבחר</div>
         </section>
 
         <section class="panel chart-panel">
@@ -636,10 +638,10 @@
           <div class="legend">
             <span class="legend-item"><span class="swatch" style="background: var(--red);"></span>מנגנון ישן</span>
             <span class="legend-item"><span class="swatch" style="background: var(--blue);"></span>מנגנון מעודכן</span>
-            <span class="legend-item"><span class="swatch" style="background: rgba(23,155,103,.24);"></span>אזור חיסכון</span>
+            <span class="legend-item"><span class="swatch" style="background: rgba(23,155,103,.34);"></span>אזור חיסכון</span>
           </div>
           <div class="chart-box">
-            <svg id="taxChart" viewBox="0 0 760 420" aria-labelledby="chartTitle chartDesc" role="img">
+            <svg id="taxChart" viewBox="0 0 760 340" aria-labelledby="chartTitle chartDesc" role="img">
               <title id="chartTitle">גרף השוואת מס איזון לפי הרכב משק הבית</title>
               <desc id="chartDesc">גרף SVG המשווה בין סך המס במנגנון הישן לבין המנגנון המעודכן עבור ההכנסה ונקודות התקן שנבחרו.</desc>
             </svg>
@@ -648,7 +650,7 @@
       </div>
     </section>
 
-    <p class="footer-note">החישוב מבוסס על כללי נקודות התקן ומדרגות המס שסופקו. מומלץ לאמת מול הנהלת הקיבוץ לפני קבלת החלטות כספיות.</p>
+    <p class="footer-note">החישוב מבוסס על כללי נקודות התקן ומדרגות המס שסופקו. לא כולל קרן עזרה הדדית. מומלץ לאמת מול הנהלת הקיבוץ לפני קבלת החלטה.</p>
   </main>
 
   <script>
@@ -671,7 +673,6 @@
       incomeAbsoluteMax: 70000,
       kidsMax: 15
     };
-    const FIXED_HOUSEHOLD_TAX = 2000;
     const CHART_SAMPLE_COUNT = 36;
     const CHART_X_LABELS = [LIMITS.incomeMin, 25000, 35000, LIMITS.incomeRangeMax, 55000, LIMITS.incomeAbsoluteMax];
 
@@ -699,6 +700,7 @@
       reductionLabel: document.getElementById("reductionLabel"),
       pointsValue: document.getElementById("pointsValue"),
       incomePerPointValue: document.getElementById("incomePerPointValue"),
+      fixedTaxValue: document.getElementById("fixedTaxValue"),
       taxChart: document.getElementById("taxChart"),
       shareBtn: document.getElementById("shareBtn"),
       resetBtn: document.getElementById("resetBtn"),
@@ -749,6 +751,10 @@
       return roundToOne(base + getKidsPoints(state.kidsUnder18, state.kids18Plus));
     }
 
+    function getFixedHouseholdTax(householdType = state.householdType) {
+      return householdType === "couple" ? 2000 : 1000;
+    }
+
     function oldTaxPerPoint(x) {
       if (x <= 4000) return 0;
       if (x <= 4250) return (x - 4000) * 0.30;
@@ -771,14 +777,15 @@
 
     function calculate() {
       const points = getTotalPoints();
+      const fixedTax = getFixedHouseholdTax();
       if (points <= 0) {
         return {
           points: 0,
           incomePerPoint: 0,
           oldPointTax: 0,
           newPointTax: 0,
-          oldTotal: FIXED_HOUSEHOLD_TAX,
-          newTotal: FIXED_HOUSEHOLD_TAX,
+          oldTotal: fixedTax,
+          newTotal: fixedTax,
           delta: 0,
           savings: 0,
           extraCost: 0,
@@ -790,8 +797,8 @@
       const incomePerPoint = state.income / points;
       const oldPointTax = oldTaxPerPoint(incomePerPoint);
       const newPointTax = newTaxPerPoint(incomePerPoint);
-      const oldTotal = oldPointTax * points + FIXED_HOUSEHOLD_TAX;
-      const newTotal = newPointTax * points + FIXED_HOUSEHOLD_TAX;
+      const oldTotal = oldPointTax * points + fixedTax;
+      const newTotal = newPointTax * points + fixedTax;
       const delta = oldTotal - newTotal;
       const savings = Math.max(0, delta);
       const extraCost = Math.max(0, -delta);
@@ -860,12 +867,13 @@
       }
       const svg = els.taxChart;
       const width = 760;
-      const height = 420;
-      const padding = { top: 24, right: 18, bottom: 44, left: 62 };
+      const height = 340;
+      const padding = { top: 20, right: 16, bottom: 40, left: 64 };
       const chartW = width - padding.left - padding.right;
       const chartH = height - padding.top - padding.bottom;
       const maxIncome = LIMITS.incomeAbsoluteMax;
       const points = metrics.points;
+      const fixedTax = getFixedHouseholdTax();
 
       const samples = Array.from(
         { length: CHART_SAMPLE_COUNT },
@@ -875,8 +883,8 @@
         const perPoint = income / points;
         return {
           income,
-          oldTotal: oldTaxPerPoint(perPoint) * points + FIXED_HOUSEHOLD_TAX,
-          newTotal: newTaxPerPoint(perPoint) * points + FIXED_HOUSEHOLD_TAX
+          oldTotal: oldTaxPerPoint(perPoint) * points + fixedTax,
+          newTotal: newTaxPerPoint(perPoint) * points + fixedTax
         };
       });
 
@@ -930,34 +938,34 @@
       svg.innerHTML = `
         <defs>
           <linearGradient id="fillArea" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stop-color="rgba(23,155,103,0.26)"></stop>
-            <stop offset="100%" stop-color="rgba(23,155,103,0.08)"></stop>
+            <stop offset="0%" stop-color="rgba(23,155,103,0.36)"></stop>
+            <stop offset="100%" stop-color="rgba(23,155,103,0.14)"></stop>
           </linearGradient>
         </defs>
-        <rect x="0" y="0" width="${width}" height="${height}" rx="24" fill="transparent"></rect>
+        <rect x="0" y="0" width="${width}" height="${height}" rx="24" fill="rgba(255,255,255,0.28)"></rect>
         ${yGrid.map((value) => `
           <g>
-            <line x1="${padding.left}" x2="${width - padding.right}" y1="${scaleY(value)}" y2="${scaleY(value)}" stroke="rgba(148,163,184,0.25)" stroke-width="1"></line>
-            <text x="${padding.left - 10}" y="${scaleY(value) + 4}" font-size="12" fill="#5f6f8a" text-anchor="end">${Math.round(value).toLocaleString("he-IL")}</text>
+            <line x1="${padding.left}" x2="${width - padding.right}" y1="${scaleY(value)}" y2="${scaleY(value)}" stroke="rgba(148,163,184,0.32)" stroke-width="1.2"></line>
+            <text x="${padding.left - 12}" y="${scaleY(value) + 5}" font-size="13" font-weight="600" fill="#52627c" text-anchor="end">${Math.round(value).toLocaleString("he-IL")}</text>
           </g>
         `).join("")}
         ${CHART_X_LABELS.map((income) => `
           <g>
-            <line x1="${scaleX(income)}" x2="${scaleX(income)}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="rgba(148,163,184,0.12)" stroke-width="1"></line>
-            <text x="${scaleX(income)}" y="${height - 16}" font-size="12" fill="#5f6f8a" text-anchor="middle">${income.toLocaleString("he-IL")}</text>
+            <line x1="${scaleX(income)}" x2="${scaleX(income)}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="rgba(148,163,184,0.16)" stroke-width="1"></line>
+            <text x="${scaleX(income)}" y="${height - 12}" font-size="13" font-weight="600" fill="#52627c" text-anchor="middle">${income.toLocaleString("he-IL")}</text>
           </g>
         `).join("")}
         ${areaPaths.map((path) => `<path d="${path}" fill="url(#fillArea)"></path>`).join("")}
-        <path d="${oldPath}" fill="none" stroke="${chartColors.red}" stroke-width="4" stroke-linecap="round"></path>
-        <path d="${newPath}" fill="none" stroke="${chartColors.blue}" stroke-width="4" stroke-linecap="round" stroke-dasharray="12 10"></path>
+        <path d="${oldPath}" fill="none" stroke="${chartColors.red}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="${newPath}" fill="none" stroke="${chartColors.blue}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="10 8"></path>
         <line x1="${trackerX}" x2="${trackerX}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="#0f172a" stroke-width="2" stroke-dasharray="4 6"></line>
-        <circle cx="${trackerX}" cy="${trackerOldY}" r="7" fill="${chartColors.red}"></circle>
-        <circle cx="${trackerX}" cy="${trackerNewY}" r="7" fill="${chartColors.blue}"></circle>
-        <g transform="translate(${Math.min(width - 210, Math.max(18, trackerX - 105))}, ${Math.max(20, Math.min(height - 110, trackerNewY - 78))})">
-          <rect width="192" height="84" rx="18" fill="rgba(255,255,255,0.96)" stroke="rgba(148,163,184,0.22)"></rect>
-          <text x="16" y="24" font-size="13" font-weight="700" fill="#10203a">הכנסה: ${formatCurrency(state.income)}</text>
-          <text x="16" y="46" font-size="12.5" fill="#df5a6f">ישן: ${formatCurrency(currentOld)}</text>
-          <text x="16" y="66" font-size="12.5" fill="#2c67f2">מעודכן: ${formatCurrency(currentNew)}</text>
+        <circle cx="${trackerX}" cy="${trackerOldY}" r="7.5" fill="${chartColors.red}" stroke="rgba(255,255,255,0.95)" stroke-width="2"></circle>
+        <circle cx="${trackerX}" cy="${trackerNewY}" r="7.5" fill="${chartColors.blue}" stroke="rgba(255,255,255,0.95)" stroke-width="2"></circle>
+        <g transform="translate(${Math.min(width - 224, Math.max(18, trackerX - 112))}, ${Math.max(18, Math.min(height - 102, trackerNewY - 74))})">
+          <rect width="206" height="78" rx="18" fill="rgba(255,255,255,0.97)" stroke="rgba(148,163,184,0.26)"></rect>
+          <text x="16" y="24" font-size="14" font-weight="800" fill="#10203a">הכנסה: ${formatCurrency(state.income)}</text>
+          <text x="16" y="46" font-size="13.5" font-weight="600" fill="#df5a6f">ישן: ${formatCurrency(currentOld)}</text>
+          <text x="16" y="66" font-size="13.5" font-weight="600" fill="#2c67f2">מעודכן: ${formatCurrency(currentNew)}</text>
         </g>
       `;
     }
@@ -973,6 +981,7 @@
       const formattedPoints = numberFormatter.format(metrics.points);
       els.pointsValue.textContent = formattedPoints;
       els.incomePerPointValue.textContent = formatCurrency(metrics.incomePerPoint);
+      els.fixedTaxValue.textContent = formatCurrency(getFixedHouseholdTax());
 
       if (els.liveScoreValue.textContent !== formattedPoints) {
         els.liveScoreValue.textContent = formattedPoints;
