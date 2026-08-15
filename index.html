@@ -909,6 +909,74 @@
     const state = { ...DEFAULT_STATE };
     let isEditingIncome = false;
 
+    const ANALYTICS_EVENTS = Object.freeze({
+      calculationStarted: "tax_calculation_started",
+      calculationCompleted: "tax_calculation_completed",
+      validationError: "tax_calculation_validation_error",
+      ctaClick: "tax_cta_clicked",
+      share: "share",
+      shareFailed: "tax_share_failed",
+      snapshotStarted: "tax_snapshot_download_started",
+      snapshotCompleted: "tax_snapshot_download_completed",
+      snapshotFailed: "tax_snapshot_download_failed",
+      engagement: "tax_engagement_milestone"
+    });
+
+    const analytics = (() => {
+      const sentKeys = new Set();
+      let calculationCompletionTimer;
+      let calculationStarted = false;
+      let calculationCompleted = false;
+
+      function send(eventName, parameters = {}) {
+        if (typeof window.gtag !== "function") return;
+        window.gtag("event", eventName, {
+          app_surface: "tax_calculator",
+          ...parameters
+        });
+      }
+
+      function sendOnce(eventName, key, parameters = {}) {
+        if (sentKeys.has(key)) return;
+        sentKeys.add(key);
+        send(eventName, parameters);
+      }
+
+      return {
+        trackCalculationInteraction(source) {
+          if (!calculationStarted) {
+            calculationStarted = true;
+            sendOnce(ANALYTICS_EVENTS.calculationStarted, ANALYTICS_EVENTS.calculationStarted, {
+              interaction_source: source
+            });
+          }
+
+          if (calculationCompleted) return;
+          window.clearTimeout(calculationCompletionTimer);
+          calculationCompletionTimer = window.setTimeout(() => {
+            calculationCompleted = true;
+            sendOnce(ANALYTICS_EVENTS.calculationCompleted, ANALYTICS_EVENTS.calculationCompleted, {
+              interaction_source: source
+            });
+          }, 800);
+        },
+        trackValidationError(field, reason) {
+          sendOnce(ANALYTICS_EVENTS.validationError, `${ANALYTICS_EVENTS.validationError}:${field}:${reason}`, {
+            field,
+            reason
+          });
+        },
+        trackCta(name) {
+          sendOnce(ANALYTICS_EVENTS.ctaClick, `${ANALYTICS_EVENTS.ctaClick}:${name}`, {
+            cta_name: name
+          });
+        },
+        trackOnce(eventName, key, parameters = {}) {
+          sendOnce(eventName, key, parameters);
+        }
+      };
+    })();
+
     const els = {
       householdType: document.getElementById("householdType"),
       kidsUnderChips: document.getElementById("kidsUnderChips"),
@@ -1077,8 +1145,10 @@
         button.className = `pill${state.householdType === item.key ? " active" : ""}`;
         button.textContent = `${item.label} · ${item.points.toFixed(1)}`;
         button.addEventListener("click", () => {
+          if (state.householdType === item.key) return;
           state.householdType = item.key;
           render();
+          analytics.trackCalculationInteraction("household_type");
         });
         els.householdType.appendChild(button);
       });
@@ -1094,8 +1164,10 @@
         button.className = `chip${isActive ? " active" : ""}`;
         button.textContent = label;
         button.addEventListener("click", () => {
+          if (state.kidsUnder18 === value) return;
           state.kidsUnder18 = value;
           render();
+          analytics.trackCalculationInteraction("children_under_18");
         });
         els.kidsUnderChips.appendChild(button);
       });
@@ -1333,14 +1405,17 @@
       renderChart(metrics);
     }
 
-    function setIncome(nextIncome) {
-      state.income = clamp(nextIncome, LIMITS.incomeMin, LIMITS.incomeAbsoluteMax);
+    function setIncome(nextIncome, source) {
+      const income = clamp(nextIncome, LIMITS.incomeMin, LIMITS.incomeAbsoluteMax);
+      if (state.income === income) return;
+      state.income = income;
       render();
+      analytics.trackCalculationInteraction(source);
     }
 
     /* ── Income +/- buttons ── */
-    els.incomeMinusBtn.addEventListener("click", () => setIncome(state.income - 500));
-    els.incomePlusBtn.addEventListener("click", () => setIncome(state.income + 500));
+    els.incomeMinusBtn.addEventListener("click", () => setIncome(state.income - 500, "income_stepper"));
+    els.incomePlusBtn.addEventListener("click", () => setIncome(state.income + 500, "income_stepper"));
 
     /* ── Kids steppers ── */
     document.addEventListener("click", (event) => {
@@ -1348,16 +1423,21 @@
       if (!button) return;
       const dir = Number(button.dataset.dir);
       if (button.dataset.step === "under") {
-        state.kidsUnder18 = clamp(state.kidsUnder18 + dir, 0, LIMITS.kidsMax);
+        const nextValue = clamp(state.kidsUnder18 + dir, 0, LIMITS.kidsMax);
+        if (nextValue === state.kidsUnder18) return;
+        state.kidsUnder18 = nextValue;
       } else {
-        state.kids18Plus = clamp(state.kids18Plus + dir, 0, LIMITS.kidsMax);
+        const nextValue = clamp(state.kids18Plus + dir, 0, LIMITS.kidsMax);
+        if (nextValue === state.kids18Plus) return;
+        state.kids18Plus = nextValue;
       }
       render();
+      analytics.trackCalculationInteraction(button.dataset.step === "under" ? "children_under_18" : "children_18_plus");
     });
 
     /* ── Income range ── */
     els.incomeRange.addEventListener("input", (event) => {
-      setIncome(Number(event.target.value));
+      setIncome(Number(event.target.value), "income_slider");
     });
 
     els.incomeInput.addEventListener("focus", () => {
@@ -1372,15 +1452,17 @@
       const nextIncome = Number(digits);
       event.target.value = digits;
       if (nextIncome >= LIMITS.incomeMin && nextIncome <= LIMITS.incomeAbsoluteMax) {
-        state.income = nextIncome;
-        render();
+        setIncome(nextIncome, "income_text");
+      } else {
+        analytics.trackValidationError("income", "out_of_range");
       }
     });
 
     els.incomeInput.addEventListener("blur", () => {
       isEditingIncome = false;
       const digits = els.incomeInput.value.replace(/[^\d]/g, "");
-      setIncome(Number(digits || DEFAULT_STATE.income));
+      if (!digits) analytics.trackValidationError("income", "empty");
+      setIncome(Number(digits || DEFAULT_STATE.income), "income_text");
     });
 
     els.incomeInput.addEventListener("keydown", (event) => {
@@ -1395,6 +1477,7 @@
         state.manualEntryOpen = true;
       }
       render();
+      analytics.trackCta("manual_points_toggle");
     });
 
     els.manualPointsInput.addEventListener("focus", () => {
@@ -1410,12 +1493,17 @@
       if (!raw.trim()) {
         state.manualPoints = null;
         render();
+        analytics.trackCalculationInteraction("manual_points");
         return;
       }
       const nextPoints = Number(raw);
       if (Number.isFinite(nextPoints) && nextPoints > 0) {
+        if (nextPoints > 20) analytics.trackValidationError("manual_points", "out_of_range");
         state.manualPoints = clamp(nextPoints, 0.1, 20);
         render();
+        analytics.trackCalculationInteraction("manual_points");
+      } else {
+        analytics.trackValidationError("manual_points", "invalid");
       }
     });
 
@@ -1432,8 +1520,10 @@
     });
 
     els.clearManualPointsBtn.addEventListener("click", () => {
+      if (state.manualPoints == null) return;
       state.manualPoints = null;
       render();
+      analytics.trackCalculationInteraction("manual_points");
     });
 
     /* ── Share ── */
@@ -1442,14 +1532,28 @@
       try {
         if (navigator.share) {
           await navigator.share(payload);
+          analytics.trackOnce(ANALYTICS_EVENTS.share, `${ANALYTICS_EVENTS.share}:native`, {
+            method: "native"
+          });
         } else if (navigator.clipboard?.writeText) {
           await navigator.clipboard.writeText(window.location.href);
           window.alert("הקישור הועתק ללוח.");
+          analytics.trackOnce(ANALYTICS_EVENTS.share, `${ANALYTICS_EVENTS.share}:clipboard`, {
+            method: "clipboard"
+          });
         } else {
           window.prompt("העתיקו את הקישור:", window.location.href);
+          analytics.trackOnce(ANALYTICS_EVENTS.share, `${ANALYTICS_EVENTS.share}:manual_copy`, {
+            method: "manual_copy"
+          });
         }
       } catch (error) {
-        if (error?.name !== "AbortError") window.alert("לא הצלחנו לשתף כרגע.");
+        if (error?.name !== "AbortError") {
+          analytics.trackOnce(ANALYTICS_EVENTS.shareFailed, ANALYTICS_EVENTS.shareFailed, {
+            failure_reason: "share_error"
+          });
+          window.alert("לא הצלחנו לשתף כרגע.");
+        }
       }
     });
 
@@ -1457,12 +1561,14 @@
     els.resetBtn.addEventListener("click", () => {
       Object.assign(state, DEFAULT_STATE);
       render();
+      analytics.trackCta("reset_calculator");
     });
 
     /* ── Tax tables modal ── */
     els.showTablesBtn.addEventListener("click", () => {
       els.tablesModal.classList.add("open");
       document.body.style.overflow = "hidden";
+      analytics.trackCta("view_tax_tables");
     });
 
     function closeModal() {
@@ -1476,6 +1582,7 @@
 
     /* ── Snapshot / Download image ── */
     els.snapshotBtn.addEventListener("click", () => {
+      analytics.trackOnce(ANALYTICS_EVENTS.snapshotStarted, ANALYTICS_EVENTS.snapshotStarted);
       const metrics = calculate();
       const householdLabel = HOUSEHOLDS.find(h => h.key === state.householdType)?.label ?? "";
       const hasSavings = metrics.delta >= 0;
@@ -1625,15 +1732,74 @@
 
       // Trigger download
       canvas.toBlob((blob) => {
+        if (!blob) {
+          analytics.trackOnce(ANALYTICS_EVENTS.snapshotFailed, ANALYTICS_EVENTS.snapshotFailed, {
+            failure_reason: "canvas_blob_unavailable"
+          });
+          window.alert("לא הצלחנו ליצור את תמונת הסיכום כרגע.");
+          return;
+        }
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
         a.download = `tax-summary-${state.householdType}-${state.income}.png`;
         a.click();
+        analytics.trackOnce(ANALYTICS_EVENTS.snapshotCompleted, ANALYTICS_EVENTS.snapshotCompleted);
         setTimeout(() => URL.revokeObjectURL(url), 2000);
       }, "image/png");
     });
 
+    function installEngagementTracking() {
+      const scrollMilestones = [25, 50, 75, 90];
+      const timeMilestones = [30, 60];
+      let activeMilliseconds = 0;
+      let visibleSince = document.visibilityState === "visible" ? Date.now() : null;
+
+      function trackActiveTime() {
+        if (visibleSince == null) return;
+        const now = Date.now();
+        activeMilliseconds += now - visibleSince;
+        visibleSince = now;
+        const activeSeconds = Math.floor(activeMilliseconds / 1000);
+        timeMilestones.forEach((seconds) => {
+          if (activeSeconds >= seconds) {
+            analytics.trackOnce(ANALYTICS_EVENTS.engagement, `${ANALYTICS_EVENTS.engagement}:time:${seconds}`, {
+              milestone_type: "time",
+              milestone_value: seconds
+            });
+          }
+        });
+      }
+
+      function trackScrollDepth() {
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        if (maxScroll <= 0) return;
+        const depth = Math.round((window.scrollY / maxScroll) * 100);
+        scrollMilestones.forEach((milestone) => {
+          if (depth >= milestone) {
+            analytics.trackOnce(ANALYTICS_EVENTS.engagement, `${ANALYTICS_EVENTS.engagement}:scroll:${milestone}`, {
+              milestone_type: "scroll_depth",
+              milestone_value: milestone
+            });
+          }
+        });
+      }
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+          trackActiveTime();
+          visibleSince = null;
+        } else {
+          visibleSince = Date.now();
+        }
+      });
+      window.addEventListener("scroll", trackScrollDepth, { passive: true });
+      window.addEventListener("resize", trackScrollDepth);
+      window.setInterval(trackActiveTime, 5000);
+      trackScrollDepth();
+    }
+
+    installEngagementTracking();
     render();
   </script>
 </body>
