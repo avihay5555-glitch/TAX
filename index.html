@@ -100,6 +100,16 @@
 
     .btn-green { color: white; background: linear-gradient(135deg, #179b67, #0e7a51); }
 
+    .btn-subtle {
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px dashed rgba(148, 163, 184, 0.35);
+      box-shadow: none;
+      font-size: 0.82rem;
+      padding: 7px 11px;
+      opacity: 0.88;
+    }
+
     .grid { display: grid; gap: 12px; }
 
     .controls { padding: 14px; }
@@ -157,16 +167,17 @@
     }
 
     .stepper button {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
       border: 0;
       background: rgba(44, 103, 242, 0.12);
       color: var(--blue);
-      font-size: 1.3rem;
+      font-size: 1.5rem;
       font-weight: 800;
       cursor: pointer;
       transition: transform var(--transition), background var(--transition);
+      touch-action: manipulation;
     }
 
     .stepper button:active { transform: scale(0.95); background: rgba(44, 103, 242, 0.2); }
@@ -183,6 +194,10 @@
       border: 1px solid rgba(198, 125, 0, 0.18);
       border-radius: 18px;
     }
+
+    .override-box[hidden] { display: none; }
+
+    .manual-toggle-wrap { display: grid; gap: 8px; }
 
     .override-row {
       display: grid;
@@ -264,25 +279,26 @@
 
     .income-stepper-row {
       display: grid;
-      grid-template-columns: 44px 1fr 44px;
+      grid-template-columns: 52px 1fr 52px;
       align-items: center;
       gap: 8px;
     }
 
     .income-step-btn {
-      width: 44px;
-      height: 44px;
+      width: 52px;
+      height: 52px;
       border-radius: 14px;
       border: 0;
       background: rgba(44, 103, 242, 0.12);
       color: var(--blue);
-      font-size: 1.5rem;
+      font-size: 1.65rem;
       font-weight: 900;
       cursor: pointer;
       transition: transform var(--transition), background var(--transition);
       display: flex;
       align-items: center;
       justify-content: center;
+      touch-action: manipulation;
     }
 
     .income-step-btn:active { transform: scale(0.95); background: rgba(44, 103, 242, 0.22); }
@@ -640,21 +656,6 @@
           </div>
 
           <div class="group">
-            <div class="group-title"><span>הזנת נקודות איזון ידנית</span></div>
-            <div class="override-box">
-              <div class="override-row">
-                <input class="number-input" id="manualPointsInput" inputmode="decimal" type="text" placeholder="השאירו ריק לחישוב אוטומטי" aria-label="הזנת נקודות איזון ידנית">
-                <button class="btn btn-secondary" id="clearManualPointsBtn" type="button">ניקוי</button>
-              </div>
-              <div class="override-status">
-                <span class="override-pill" id="manualPointsMode">חישוב אוטומטי</span>
-                <span id="manualPointsSummary">החישוב נשען כרגע על סוג משק הבית ומספר הילדים.</span>
-              </div>
-              <p class="hint warning">כאשר מזינים נקודות ידנית, הערך הידני דורס את החישוב האוטומטי לפי סוג משק הבית והילדים עד להסרה דרך &quot;ניקוי&quot;.</p>
-            </div>
-          </div>
-
-          <div class="group">
             <div class="group-title"><span>ילדים עד גיל 18</span></div>
             <div class="chips" id="kidsUnderChips"></div>
             <div class="stepper">
@@ -684,6 +685,21 @@
             <span class="live-score-value" id="liveScoreValue"></span>
           </div>
 
+          <div class="manual-toggle-wrap">
+            <button class="btn btn-subtle" id="manualPointsToggleBtn" type="button">הזנה ידנית (אופציונלי)</button>
+            <div class="override-box" id="manualPointsPanel" hidden>
+              <div class="override-row">
+                <input class="number-input" id="manualPointsInput" inputmode="decimal" type="text" placeholder="הזינו נקודות ידניות" aria-label="הזנת נקודות איזון ידנית">
+                <button class="btn btn-secondary" id="clearManualPointsBtn" type="button">ניקוי</button>
+              </div>
+              <div class="override-status">
+                <span class="override-pill" id="manualPointsMode">חישוב אוטומטי</span>
+                <span id="manualPointsSummary">החישוב נשען כרגע על סוג משק הבית ומספר הילדים.</span>
+              </div>
+              <p class="hint warning">במצב ידני, הערך הידני מחליף את החישוב האוטומטי עד לביטול המצב הידני.</p>
+            </div>
+          </div>
+
           <div class="income-card">
             <div class="group-title"><span>הכנסה חייבת במס (חודשית)</span></div>
             <div class="income-display">
@@ -710,7 +726,7 @@
           <div class="stats-grid">
             <article class="stat-card old">
               <div class="stat-head">
-                <span class="stat-label">מס חודשי · מנגנון ישן</span>
+                <span class="stat-label" id="oldTaxLabel">מס חודשי · מנגנון ישן</span>
                 <span class="stat-icon" aria-hidden="true">🏛️</span>
               </div>
               <strong class="stat-value" id="oldTaxValue">₪ 0</strong>
@@ -722,7 +738,7 @@
 
             <article class="stat-card new">
               <div class="stat-head">
-                <span class="stat-label">מס חודשי · מנגנון מעודכן</span>
+                <span class="stat-label" id="newTaxLabel">מס חודשי · מנגנון מעודכן</span>
                 <span class="stat-icon" aria-hidden="true">✨</span>
               </div>
               <strong class="stat-value" id="newTaxValue">₪ 0</strong>
@@ -770,9 +786,10 @@
           </div>
           <div class="chart-focus-grid">
             <div class="chart-focus-card"><span class="hint">הכנסה נוכחית</span><strong id="chartIncomeValue">₪ 0</strong></div>
-            <div class="chart-focus-card"><span class="hint">מס ישן</span><strong id="chartOldValue">₪ 0</strong></div>
-            <div class="chart-focus-card"><span class="hint">מס חדש</span><strong id="chartNewValue">₪ 0</strong></div>
+            <div class="chart-focus-card"><span class="hint" id="chartOldLabel">מס ישן</span><strong id="chartOldValue">₪ 0</strong></div>
+            <div class="chart-focus-card"><span class="hint" id="chartNewLabel">מס חדש</span><strong id="chartNewValue">₪ 0</strong></div>
             <div class="chart-focus-card"><span class="hint" id="chartDeltaLabel">פער חודשי</span><strong id="chartDeltaValue">₪ 0</strong></div>
+            <div class="chart-focus-card"><span class="hint" id="chartCurrentSavingsLabel">חיסכון בנקודה הנוכחית</span><strong id="chartCurrentSavingsValue">₪ 0</strong></div>
           </div>
           <div class="chart-box">
             <svg id="taxChart" viewBox="0 0 760 320" aria-labelledby="chartTitle chartDesc" role="img">
@@ -867,7 +884,8 @@
       kidsUnder18: 3,
       kids18Plus: 0,
       income: 22000,
-      manualPoints: null
+      manualPoints: null,
+      manualEntryOpen: false
     };
 
     const LIMITS = {
@@ -908,16 +926,24 @@
       pointsSourceValue: document.getElementById("pointsSourceValue"),
       incomePerPointValue: document.getElementById("incomePerPointValue"),
       fixedTaxValue: document.getElementById("fixedTaxValue"),
+      oldTaxLabel: document.getElementById("oldTaxLabel"),
+      newTaxLabel: document.getElementById("newTaxLabel"),
       manualPointsInput: document.getElementById("manualPointsInput"),
+      manualPointsToggleBtn: document.getElementById("manualPointsToggleBtn"),
+      manualPointsPanel: document.getElementById("manualPointsPanel"),
       clearManualPointsBtn: document.getElementById("clearManualPointsBtn"),
       manualPointsMode: document.getElementById("manualPointsMode"),
       manualPointsSummary: document.getElementById("manualPointsSummary"),
       liveScoreLabel: document.getElementById("liveScoreLabel"),
       chartIncomeValue: document.getElementById("chartIncomeValue"),
+      chartOldLabel: document.getElementById("chartOldLabel"),
+      chartNewLabel: document.getElementById("chartNewLabel"),
       chartOldValue: document.getElementById("chartOldValue"),
       chartNewValue: document.getElementById("chartNewValue"),
       chartDeltaLabel: document.getElementById("chartDeltaLabel"),
       chartDeltaValue: document.getElementById("chartDeltaValue"),
+      chartCurrentSavingsLabel: document.getElementById("chartCurrentSavingsLabel"),
+      chartCurrentSavingsValue: document.getElementById("chartCurrentSavingsValue"),
       taxChart: document.getElementById("taxChart"),
       shareBtn: document.getElementById("shareBtn"),
       resetBtn: document.getElementById("resetBtn"),
@@ -976,7 +1002,7 @@
     }
 
     function getTotalPoints() {
-      return state.manualPoints != null ? roundToOne(state.manualPoints) : getAutoPoints();
+      return state.manualEntryOpen && state.manualPoints != null ? roundToOne(state.manualPoints) : getAutoPoints();
     }
 
     function getFixedHouseholdTax(householdType) {
@@ -1008,12 +1034,13 @@
       const points = getTotalPoints();
       const autoPoints = getAutoPoints();
       const fixedTax = getFixedHouseholdTax();
+      const usesManualPoints = state.manualEntryOpen && state.manualPoints != null;
       if (points <= 0) {
         return {
           points: 0, autoPoints, incomePerPoint: 0, oldPointTax: 0, newPointTax: 0,
           oldTotal: fixedTax, newTotal: fixedTax, delta: 0, savings: 0,
           extraCost: 0, yearlySavings: 0, yearlyDelta: 0, reduction: 0,
-          usesManualPoints: state.manualPoints != null
+          usesManualPoints
         };
       }
       const incomePerPoint = state.income / points;
@@ -1030,7 +1057,7 @@
         points, autoPoints, incomePerPoint, oldPointTax, newPointTax,
         oldTotal, newTotal, delta, savings, extraCost,
         yearlySavings: savings * 12, yearlyDelta: delta * 12, reduction,
-        usesManualPoints: state.manualPoints != null
+        usesManualPoints
       };
     }
 
@@ -1075,14 +1102,16 @@
     }
 
     function syncManualPointsUI(metrics) {
+      els.manualPointsPanel.hidden = !state.manualEntryOpen;
+      els.manualPointsToggleBtn.textContent = state.manualEntryOpen ? "בטלו הזנה ידנית" : "הזנה ידנית (אופציונלי)";
       els.manualPointsInput.value = state.manualPoints == null ? "" : numberFormatter.format(state.manualPoints);
-      const manualMode = state.manualPoints != null;
-      els.manualPointsMode.textContent = manualMode ? "מצב ידני פעיל" : "חישוב אוטומטי";
+      const manualMode = metrics.usesManualPoints;
+      els.manualPointsMode.textContent = !state.manualEntryOpen ? "חישוב אוטומטי" : (manualMode ? "מצב ידני פעיל" : "מצב ידני פתוח");
       els.manualPointsSummary.textContent = manualMode
         ? `מוזנות ${numberFormatter.format(metrics.points)} נקודות ידנית במקום ${numberFormatter.format(metrics.autoPoints)} נקודות מחושבות.`
-        : `החישוב נשען כרגע על סוג משק הבית ומספר הילדים (${numberFormatter.format(metrics.autoPoints)} נקודות).`;
-      els.clearManualPointsBtn.disabled = !manualMode;
-      els.clearManualPointsBtn.style.opacity = manualMode ? "1" : "0.65";
+        : "אפשר להזין ניקוד ידני, או להשאיר ריק כדי להמשיך עם חישוב אוטומטי.";
+      els.clearManualPointsBtn.disabled = !state.manualEntryOpen || state.manualPoints == null;
+      els.clearManualPointsBtn.style.opacity = els.clearManualPointsBtn.disabled ? "0.65" : "1";
     }
 
     function flashValue(element, nextValue) {
@@ -1156,6 +1185,10 @@
       const tx = sx(state.income);
       const toy = sy(metrics.oldTotal);
       const tny = sy(metrics.newTotal);
+      const currentSavings = metrics.delta >= 0 ? metrics.savings : metrics.extraCost;
+      const currentSavingsLabel = metrics.delta >= 0 ? "חיסכון" : "תוספת";
+      const savingsLabelAnchor = tx > (W - pad.right - 140) ? "end" : "start";
+      const savingsLabelX = savingsLabelAnchor === "end" ? tx - 8 : tx + 8;
 
       // Savings band label
       const midInc = (LIMITS.incomeMin + maxIncome) / 2;
@@ -1225,6 +1258,8 @@
         <!-- Current income vertical line -->
         <line x1="${tx.toFixed(1)}" x2="${tx.toFixed(1)}" y1="${pad.top}" y2="${H - pad.bottom}"
               stroke="rgba(15,23,42,0.35)" stroke-width="1.5" stroke-dasharray="5 5"/>
+        <text x="${savingsLabelX.toFixed(1)}" y="${(pad.top + 14).toFixed(1)}" font-size="11.5" font-weight="700"
+              fill="${metrics.delta >= 0 ? "#179b67" : "#9a5a00"}" text-anchor="${savingsLabelAnchor}">${currentSavingsLabel}: ${formatCurrency(currentSavings)}</text>
 
         <!-- Dots at current income -->
         <circle cx="${tx.toFixed(1)}" cy="${toy.toFixed(1)}" r="7" fill="${chartColors.red}"
@@ -1249,7 +1284,10 @@
       els.pointsValue.textContent = formattedPoints;
       els.pointsSourceValue.textContent = metrics.usesManualPoints ? "ידני" : "אוטומטי";
       els.incomePerPointValue.textContent = formatCurrency(metrics.incomePerPoint);
-      els.fixedTaxValue.textContent = formatCurrency(getFixedHouseholdTax());
+      const fixedTax = getFixedHouseholdTax();
+      els.fixedTaxValue.textContent = formatCurrency(fixedTax);
+      els.oldTaxLabel.textContent = `מס חודשי · מנגנון ישן (כולל מס קבוע ${formatCurrency(fixedTax)})`;
+      els.newTaxLabel.textContent = `מס חודשי · מנגנון מעודכן (כולל מס קבוע ${formatCurrency(fixedTax)})`;
 
       if (els.liveScoreValue.textContent !== formattedPoints) {
         els.liveScoreValue.textContent = formattedPoints;
@@ -1273,10 +1311,14 @@
       els.yearlySavingsValue.textContent = formatCurrency(Math.abs(metrics.yearlyDelta));
       els.reductionValue.textContent = `${Math.abs(metrics.reduction).toFixed(1)}%`;
       els.chartIncomeValue.textContent = formatCurrency(state.income);
+      els.chartOldLabel.textContent = `מס ישן (כולל קבוע ${formatCurrency(fixedTax)})`;
+      els.chartNewLabel.textContent = `מס חדש (כולל קבוע ${formatCurrency(fixedTax)})`;
       els.chartOldValue.textContent = formatCurrency(metrics.oldTotal);
       els.chartNewValue.textContent = formatCurrency(metrics.newTotal);
       els.chartDeltaLabel.textContent = hasSavings ? "פער חודשי" : "תוספת חודשית";
       els.chartDeltaValue.textContent = formatCurrency(Math.abs(metrics.delta));
+      els.chartCurrentSavingsLabel.textContent = hasSavings ? "חיסכון בנקודה הנוכחית" : "תוספת בנקודה הנוכחית";
+      els.chartCurrentSavingsValue.textContent = formatCurrency(hasSavings ? metrics.savings : metrics.extraCost);
 
       renderChart(metrics);
     }
@@ -1335,7 +1377,18 @@
       if (event.key === "Enter") { event.preventDefault(); els.incomeInput.blur(); }
     });
 
+    els.manualPointsToggleBtn.addEventListener("click", () => {
+      if (state.manualEntryOpen) {
+        state.manualEntryOpen = false;
+        state.manualPoints = null;
+      } else {
+        state.manualEntryOpen = true;
+      }
+      render();
+    });
+
     els.manualPointsInput.addEventListener("input", (event) => {
+      if (!state.manualEntryOpen) return;
       const normalized = event.target.value.replace(",", ".").replace(/[^\d.]/g, "");
       const parts = normalized.split(".");
       const safeValue = parts.length > 1 ? `${parts[0]}.${parts.slice(1).join("")}` : normalized;
@@ -1401,7 +1454,6 @@
       const householdLabel = HOUSEHOLDS.find(h => h.key === state.householdType)?.label ?? "";
       const hasSavings = metrics.delta >= 0;
       const pointsModeLabel = metrics.usesManualPoints ? "נקודות ידניות" : "נקודות מחושבות";
-      const childrenLabel = `${state.kidsUnder18} עד גיל 18 · ${state.kids18Plus} מגיל 18+`;
 
       // Build a readable canvas-based summary image
       const canvas = document.createElement("canvas");
@@ -1459,13 +1511,19 @@
       // Info row
       const labelColor = "#5f6f8a";
       const valueColor = "#10203a";
-      const detailCards = [
-        { label: "סוג משק בית", value: householdLabel },
-        { label: "ילדים", value: childrenLabel },
-        { label: "הכנסה חודשית", value: formatCurrency(state.income) },
-        { label: pointsModeLabel, value: numberFormatter.format(metrics.points) },
-        { label: "נקודות מחושבות בפועל", value: numberFormatter.format(metrics.autoPoints) }
-      ];
+      const detailCards = metrics.usesManualPoints
+        ? [
+            { label: "הכנסה חודשית", value: formatCurrency(state.income) },
+            { label: "מצב ניקוד", value: "הזנה ידנית" },
+            { label: "נקודות ידניות", value: numberFormatter.format(metrics.points) }
+          ]
+        : [
+            { label: "סוג משק בית", value: householdLabel },
+            { label: "ילדים עד גיל 18", value: String(state.kidsUnder18) },
+            { label: "ילדים מגיל 18+", value: String(state.kids18Plus) },
+            { label: "הכנסה חודשית", value: formatCurrency(state.income) },
+            { label: pointsModeLabel, value: numberFormatter.format(metrics.points) }
+          ];
 
       drawCard(24, 148, 772, 246, "rgba(255,255,255,0.92)", "rgba(148,163,184,0.24)");
       ctx.textAlign = "right";
@@ -1486,7 +1544,7 @@
       if (metrics.usesManualPoints) {
         ctx.fillStyle = "#9a5a00";
         ctx.font = `700 14px -apple-system, BlinkMacSystemFont, Arial`;
-        ctx.fillText("הערה: נקודות ידניות דורסות את החישוב האוטומטי של סוג המשק והילדים.", 768, 368);
+        ctx.fillText("הערה: בניקוד ידני לא מוצגים סוג המשק ונתוני הילדים.", 768, 368);
       }
 
       drawCard(24, 422, 244, 160, "rgba(255,240,244,0.96)", "rgba(223,90,111,0.24)");
