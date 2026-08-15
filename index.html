@@ -10,6 +10,14 @@
   <meta name="theme-color" content="#0f172a">
   <meta name="description" content="מחשבון מס איזון להשוואה בין מנגנון ישן למעודכן עבור משקי בית בקיבוץ.">
   <title>מחשבון מס איזון</title>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TNSBNW42WG"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-TNSBNW42WG');
+  </script>
   <style>
     :root {
       color-scheme: light;
@@ -1104,7 +1112,9 @@
     function syncManualPointsUI(metrics) {
       els.manualPointsPanel.hidden = !state.manualEntryOpen;
       els.manualPointsToggleBtn.textContent = state.manualEntryOpen ? "בטלו הזנה ידנית" : "הזנה ידנית (אופציונלי)";
-      els.manualPointsInput.value = state.manualPoints == null ? "" : numberFormatter.format(state.manualPoints);
+      if (document.activeElement !== els.manualPointsInput) {
+        els.manualPointsInput.value = state.manualPoints == null ? "" : numberFormatter.format(state.manualPoints);
+      }
       const manualMode = metrics.usesManualPoints;
       els.manualPointsMode.textContent = !state.manualEntryOpen ? "חישוב אוטומטי" : (manualMode ? "מצב ידני פעיל" : "מצב ידני פתוח");
       els.manualPointsSummary.textContent = manualMode
@@ -1387,22 +1397,38 @@
       render();
     });
 
-    els.manualPointsInput.addEventListener("input", (event) => {
+    els.manualPointsInput.addEventListener("focus", () => {
+      if (state.manualPoints != null) {
+        els.manualPointsInput.value = String(state.manualPoints);
+      }
+      els.manualPointsInput.select();
+    });
+
+    els.manualPointsInput.addEventListener("input", () => {
       if (!state.manualEntryOpen) return;
-      const normalized = event.target.value.replace(",", ".").replace(/[^\d.]/g, "");
-      const parts = normalized.split(".");
-      const safeValue = parts.length > 1 ? `${parts[0]}.${parts.slice(1).join("")}` : normalized;
-      event.target.value = safeValue;
-      if (!safeValue) {
+      const raw = els.manualPointsInput.value.replace(",", ".");
+      if (!raw.trim()) {
         state.manualPoints = null;
         render();
         return;
       }
-      const nextPoints = Number(safeValue);
+      const nextPoints = Number(raw);
       if (Number.isFinite(nextPoints) && nextPoints > 0) {
         state.manualPoints = clamp(nextPoints, 0.1, 20);
         render();
       }
+    });
+
+    els.manualPointsInput.addEventListener("blur", () => {
+      if (state.manualPoints != null) {
+        els.manualPointsInput.value = numberFormatter.format(state.manualPoints);
+      } else {
+        els.manualPointsInput.value = "";
+      }
+    });
+
+    els.manualPointsInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") { event.preventDefault(); els.manualPointsInput.blur(); }
     });
 
     els.clearManualPointsBtn.addEventListener("click", () => {
