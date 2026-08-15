@@ -571,8 +571,8 @@
 
         <section class="panel chart-panel">
           <div class="group-title">
-            <span>עקומות מס פרוגרסיביות</span>
-            <span class="hint">אזור ירוק = החיסכון הישיר למשק הבית</span>
+            <span>עקומות מס פרוגרסיביות לפי הרכב משק הבית שנבחר</span>
+            <span class="hint">אזור ירוק = החיסכון הישיר למשק הבית עבור נקודות התקן שנבחרו</span>
           </div>
           <div class="legend">
             <span class="legend-item"><span class="swatch" style="background: var(--red);"></span>מנגנון ישן</span>
@@ -581,8 +581,8 @@
           </div>
           <div class="chart-box">
             <svg id="taxChart" viewBox="0 0 760 420" aria-labelledby="chartTitle chartDesc" role="img">
-              <title id="chartTitle">גרף השוואת מס איזון</title>
-              <desc id="chartDesc">גרף SVG המשווה בין סך המס במנגנון הישן לבין המנגנון המעודכן עבור ההכנסה שנבחרה.</desc>
+              <title id="chartTitle">גרף השוואת מס איזון לפי הרכב משק הבית</title>
+              <desc id="chartDesc">גרף SVG המשווה בין סך המס במנגנון הישן לבין המנגנון המעודכן עבור ההכנסה ונקודות התקן שנבחרו.</desc>
             </svg>
           </div>
         </section>
@@ -612,6 +612,7 @@
       incomeAbsoluteMax: 70000,
       kidsMax: 15
     };
+    const FIXED_HOUSEHOLD_TAX = 2000;
 
     const state = { ...DEFAULT_STATE };
     let isEditingIncome = false;
@@ -711,8 +712,8 @@
       const incomePerPoint = state.income / points;
       const oldPointTax = oldTaxPerPoint(incomePerPoint);
       const newPointTax = newTaxPerPoint(incomePerPoint);
-      const oldTotal = oldPointTax * points + 2000;
-      const newTotal = newPointTax * points + 2000;
+      const oldTotal = oldPointTax * points + FIXED_HOUSEHOLD_TAX;
+      const newTotal = newPointTax * points + FIXED_HOUSEHOLD_TAX;
       const delta = oldTotal - newTotal;
       const savings = Math.max(0, delta);
       const extraCost = Math.max(0, -delta);
@@ -789,10 +790,11 @@
         const perPoint = income / points;
         return {
           income,
-          oldTotal: oldTaxPerPoint(perPoint) * points + 2000,
-          newTotal: newTaxPerPoint(perPoint) * points + 2000
+          oldTotal: oldTaxPerPoint(perPoint) * points + FIXED_HOUSEHOLD_TAX,
+          newTotal: newTaxPerPoint(perPoint) * points + FIXED_HOUSEHOLD_TAX
         };
       });
+      const hasSavingsArea = chartData.every((item) => item.oldTotal >= item.newTotal);
 
       const currentOld = metrics.oldTotal;
       const currentNew = metrics.newTotal;
@@ -840,7 +842,7 @@
             <text x="${scaleX(income)}" y="${height - 16}" font-size="12" fill="#5f6f8a" text-anchor="middle">${(income / 1000).toFixed(0)}k</text>
           </g>
         `).join("")}
-        <path d="${areaPath}" fill="url(#fillArea)"></path>
+        ${hasSavingsArea ? `<path d="${areaPath}" fill="url(#fillArea)"></path>` : ""}
         <path d="${oldPath}" fill="none" stroke="${chartColors.red}" stroke-width="4" stroke-linecap="round"></path>
         <path d="${newPath}" fill="none" stroke="${chartColors.blue}" stroke-width="4" stroke-linecap="round" stroke-dasharray="12 10"></path>
         <line x1="${trackerX}" x2="${trackerX}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="#0f172a" stroke-width="2" stroke-dasharray="4 6"></line>
