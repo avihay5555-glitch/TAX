@@ -546,16 +546,16 @@
               </div>
             </article>
 
-            <article class="stat-card save">
-              <span class="stat-label">חיסכון למשק הבית</span>
+            <article class="stat-card save" id="deltaCard">
+              <span class="stat-label" id="deltaLabel">חיסכון למשק הבית</span>
               <strong class="stat-value" id="monthlySavingsValue">₪ 0</strong>
               <div class="stat-subgrid">
                 <div class="mini">
-                  <span class="hint">חיסכון שנתי</span>
+                  <span class="hint" id="yearlyLabel">חיסכון שנתי</span>
                   <strong id="yearlySavingsValue">₪ 0</strong>
                 </div>
                 <div class="mini">
-                  <span class="hint">% ירידה</span>
+                  <span class="hint" id="reductionLabel">% ירידה</span>
                   <strong id="reductionValue">0%</strong>
                 </div>
               </div>
@@ -631,6 +631,10 @@
       monthlySavingsValue: document.getElementById("monthlySavingsValue"),
       yearlySavingsValue: document.getElementById("yearlySavingsValue"),
       reductionValue: document.getElementById("reductionValue"),
+      deltaCard: document.getElementById("deltaCard"),
+      deltaLabel: document.getElementById("deltaLabel"),
+      yearlyLabel: document.getElementById("yearlyLabel"),
+      reductionLabel: document.getElementById("reductionLabel"),
       pointsValue: document.getElementById("pointsValue"),
       incomePerPointValue: document.getElementById("incomePerPointValue"),
       taxChart: document.getElementById("taxChart"),
@@ -648,6 +652,11 @@
       maximumFractionDigits: 1,
       minimumFractionDigits: 1
     });
+    const themeStyles = getComputedStyle(document.documentElement);
+    const chartColors = {
+      red: themeStyles.getPropertyValue("--red").trim(),
+      blue: themeStyles.getPropertyValue("--blue").trim()
+    };
 
     function clamp(value, min, max) {
       return Math.min(max, Math.max(min, value));
@@ -704,8 +713,10 @@
       const newPointTax = newTaxPerPoint(incomePerPoint);
       const oldTotal = oldPointTax * points + 2000;
       const newTotal = newPointTax * points + 2000;
-      const savings = Math.max(0, oldTotal - newTotal);
-      const reduction = oldTotal > 0 ? (savings / oldTotal) * 100 : 0;
+      const delta = oldTotal - newTotal;
+      const savings = Math.max(0, delta);
+      const extraCost = Math.max(0, -delta);
+      const reduction = oldTotal > 0 ? (delta / oldTotal) * 100 : 0;
 
       return {
         points,
@@ -714,8 +725,11 @@
         newPointTax,
         oldTotal,
         newTotal,
+        delta,
         savings,
+        extraCost,
         yearlySavings: savings * 12,
+        yearlyDelta: delta * 12,
         reduction
       };
     }
@@ -741,7 +755,8 @@
         const value = label === "7+" ? 7 : index;
         const button = document.createElement("button");
         button.type = "button";
-        button.className = `chip${state.kidsUnder18 === value ? " active" : ""}`;
+        const isActive = label === "7+" ? state.kidsUnder18 >= 7 : state.kidsUnder18 === value;
+        button.className = `chip${isActive ? " active" : ""}`;
         button.textContent = label;
         button.addEventListener("click", () => {
           state.kidsUnder18 = value;
@@ -781,7 +796,10 @@
 
       const currentOld = metrics.oldTotal;
       const currentNew = metrics.newTotal;
-      const maxY = Math.max(...chartData.flatMap((item) => [item.oldTotal, item.newTotal]), currentOld, currentNew) * 1.08;
+      const maxSeriesValue = chartData.reduce((maxValue, item) => {
+        return Math.max(maxValue, item.oldTotal, item.newTotal);
+      }, Math.max(currentOld, currentNew));
+      const maxY = maxSeriesValue * 1.08;
 
       const scaleX = (income) => padding.left + ((income - LIMITS.incomeMin) / (maxIncome - LIMITS.incomeMin)) * chartW;
       const scaleY = (value) => padding.top + chartH - (value / maxY) * chartH;
@@ -823,11 +841,11 @@
           </g>
         `).join("")}
         <path d="${areaPath}" fill="url(#fillArea)"></path>
-        <path d="${oldPath}" fill="none" stroke="${getComputedStyle(document.documentElement).getPropertyValue('--red').trim()}" stroke-width="4" stroke-linecap="round"></path>
-        <path d="${newPath}" fill="none" stroke="${getComputedStyle(document.documentElement).getPropertyValue('--blue').trim()}" stroke-width="4" stroke-linecap="round" stroke-dasharray="12 10"></path>
+        <path d="${oldPath}" fill="none" stroke="${chartColors.red}" stroke-width="4" stroke-linecap="round"></path>
+        <path d="${newPath}" fill="none" stroke="${chartColors.blue}" stroke-width="4" stroke-linecap="round" stroke-dasharray="12 10"></path>
         <line x1="${trackerX}" x2="${trackerX}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="#0f172a" stroke-width="2" stroke-dasharray="4 6"></line>
-        <circle cx="${trackerX}" cy="${trackerOldY}" r="7" fill="${getComputedStyle(document.documentElement).getPropertyValue('--red').trim()}"></circle>
-        <circle cx="${trackerX}" cy="${trackerNewY}" r="7" fill="${getComputedStyle(document.documentElement).getPropertyValue('--blue').trim()}"></circle>
+        <circle cx="${trackerX}" cy="${trackerOldY}" r="7" fill="${chartColors.red}"></circle>
+        <circle cx="${trackerX}" cy="${trackerNewY}" r="7" fill="${chartColors.blue}"></circle>
         <g transform="translate(${Math.min(width - 210, Math.max(18, trackerX - 105))}, ${Math.max(20, Math.min(height - 110, trackerNewY - 78))})">
           <rect width="192" height="84" rx="18" fill="rgba(255,255,255,0.96)" stroke="rgba(148,163,184,0.22)"></rect>
           <text x="16" y="24" font-size="13" font-weight="700" fill="#10203a">הכנסה: ${formatCurrency(state.income)}</text>
@@ -851,9 +869,15 @@
       els.newTaxValue.textContent = formatCurrency(metrics.newTotal);
       els.oldTaxPerPointValue.textContent = formatCurrency(metrics.oldPointTax);
       els.newTaxPerPointValue.textContent = formatCurrency(metrics.newPointTax);
-      els.monthlySavingsValue.textContent = formatCurrency(metrics.savings);
-      els.yearlySavingsValue.textContent = formatCurrency(metrics.yearlySavings);
-      els.reductionValue.textContent = `${metrics.reduction.toFixed(1)}%`;
+      const hasSavings = metrics.delta >= 0;
+      els.deltaCard.classList.toggle("old", !hasSavings);
+      els.deltaCard.classList.toggle("save", hasSavings);
+      els.deltaLabel.textContent = hasSavings ? "חיסכון למשק הבית" : "תוספת עלות למשק הבית";
+      els.yearlyLabel.textContent = hasSavings ? "חיסכון שנתי" : "תוספת עלות שנתית";
+      els.reductionLabel.textContent = hasSavings ? "% ירידה" : "% שינוי";
+      els.monthlySavingsValue.textContent = formatCurrency(hasSavings ? metrics.savings : metrics.extraCost);
+      els.yearlySavingsValue.textContent = formatCurrency(Math.abs(metrics.yearlyDelta));
+      els.reductionValue.textContent = `${Math.abs(metrics.reduction).toFixed(1)}%`;
 
       renderChart(metrics);
     }
@@ -903,7 +927,6 @@
       isEditingIncome = false;
       const digits = els.incomeInput.value.replace(/[^\d]/g, "");
       setIncome(Number(digits || DEFAULT_STATE.income));
-      render();
     });
 
     els.incomeInput.addEventListener("keydown", (event) => {
