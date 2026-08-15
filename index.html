@@ -562,7 +562,7 @@
 
           <div class="live-score-bar" id="liveScoreBar">
             <span class="live-score-label">נקודות תקן מעודכנות</span>
-            <span class="live-score-value" id="liveScoreValue">0.0</span>
+            <span class="live-score-value" id="liveScoreValue"></span>
           </div>
 
           <div class="income-card">
@@ -970,12 +970,12 @@
 
       els.kidsUnderValue.textContent = String(state.kidsUnder18);
       els.kidsAdultValue.textContent = String(state.kids18Plus);
-      els.pointsValue.textContent = numberFormatter.format(metrics.points);
+      const formattedPoints = numberFormatter.format(metrics.points);
+      els.pointsValue.textContent = formattedPoints;
       els.incomePerPointValue.textContent = formatCurrency(metrics.incomePerPoint);
 
-      const newScore = numberFormatter.format(metrics.points);
-      if (els.liveScoreValue.textContent !== newScore) {
-        els.liveScoreValue.textContent = newScore;
+      if (els.liveScoreValue.textContent !== formattedPoints) {
+        els.liveScoreValue.textContent = formattedPoints;
         els.liveScoreValue.classList.remove("pulse");
         void els.liveScoreValue.offsetWidth;
         els.liveScoreValue.classList.add("pulse");
