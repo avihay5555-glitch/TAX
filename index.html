@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>מחשבון מס איזון - ישן מול חדש</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #182235;
+      --muted: #60708a;
+      --primary: #2563eb;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --border: #e5eaf3;
+      --shadow: 0 10px 24px rgba(20, 33, 61, 0.08);
+      --radius: 16px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Hebrew", Arial, sans-serif;
+      line-height: 1.45;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .sub {
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+
+    .label {
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .segmented {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .segmented button,
+    .chip,
+    .btn,
+    .input,
+    input[type="range"] {
+      font: inherit;
+    }
+
+    .segmented button,
+    .chip,
+    .btn {
+      border: 1px solid #cfd8ea;
+      background: #fff;
+      color: var(--text);
+      border-radius: 12px;
+      min-height: 44px;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .segmented button.active,
+    .chip.active {
+      border-color: var(--primary);
+      background: #eef4ff;
+      color: #103f9f;
+      font-weight: 700;
+    }
+
+    .controls-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .chips {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      width: 44px;
+      padding: 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .value-box {
+      min-width: 52px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .input-row {
+      display: grid;
+      gap: 10px;
+    }
+
+    .input {
+      width: 100%;
+      border: 1px solid #cfd8ea;
+      border-radius: 12px;
+      min-height: 46px;
+      padding: 10px 12px;
+      font-size: 1.05rem;
+      background: #fff;
+      text-align: right;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--primary);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    .kpi {
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid transparent;
+    }
+
+    .kpi h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #334155;
+    }
+
+    .kpi .number {
+      margin-top: 5px;
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .kpi.old { background: #fef2f2; border-color: #fecaca; }
+    .kpi.new { background: #eff6ff; border-color: #bfdbfe; }
+    .kpi.save { background: #f0fdf4; border-color: #bbf7d0; }
+
+    .muted {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .chart-wrap {
+      overflow-x: auto;
+    }
+
+    svg {
+      width: 100%;
+      min-width: 300px;
+      height: auto;
+      display: block;
+    }
+
+    @media (min-width: 760px) {
+      .container { padding: 24px; gap: 16px; }
+      .controls-grid { grid-template-columns: 1fr 1fr; }
+      .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+      h1 { font-size: 1.55rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <h1>מחשבון מס איזון - מנגנון ישן מול מעודכן</h1>
+      <p class="sub">חשב/י נקודות תקן, מס חודשי כולל, וחיסכון חודשי/שנתי בזמן אמת.</p>
+    </section>
+
+    <section class="card controls-grid">
+      <div>
+        <label class="label">סוג משק בית</label>
+        <div class="segmented" id="householdType"></div>
+      </div>
+
+      <div>
+        <label class="label">ילדים מתחת לגיל 18</label>
+        <div class="chips" id="kidsUnderChips"></div>
+        <div class="counter">
+          <button class="btn" id="kidsUnderMinus" aria-label="הקטן ילדים מתחת לגיל 18">−</button>
+          <div class="value-box" id="kidsUnderValue">0</div>
+          <button class="btn" id="kidsUnderPlus" aria-label="הגדל ילדים מתחת לגיל 18">+</button>
+        </div>
+      </div>
+
+      <div>
+        <label class="label">ילדים מעל גיל 18</label>
+        <div class="counter">
+          <button class="btn" id="kidsOverMinus" aria-label="הקטן ילדים מעל גיל 18">−</button>
+          <div class="value-box" id="kidsOverValue">0</div>
+          <button class="btn" id="kidsOverPlus" aria-label="הגדל ילדים מעל גיל 18">+</button>
+        </div>
+      </div>
+
+      <div>
+        <label class="label" for="incomeInput">הכנסה חודשית נטו (₪)</label>
+        <div class="input-row">
+          <input id="incomeInput" class="input" type="text" inputmode="numeric" value="25,000" aria-label="הכנסה חודשית נטו">
+          <input id="incomeRange" type="range" min="15000" max="45000" step="100" value="25000" aria-label="טווח הכנסה">
+          <div class="muted">טווח: 15,000 ₪ עד 45,000 ₪</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="kpi-grid">
+        <article class="kpi old">
+          <h3>מס חודשי כולל - ישן</h3>
+          <div class="number" id="oldTaxValue">0 ₪</div>
+        </article>
+
+        <article class="kpi new">
+          <h3>מס חודשי כולל - חדש</h3>
+          <div class="number" id="newTaxValue">0 ₪</div>
+        </article>
+
+        <article class="kpi save">
+          <h3>חיסכון</h3>
+          <div class="number" id="monthlySavingsValue">0 ₪ לחודש</div>
+          <div class="muted" id="yearlySavingsValue">0 ₪ לשנה</div>
+        </article>
+      </div>
+      <p class="muted" id="pointsSummary" style="margin: 10px 0 0;"></p>
+    </section>
+
+    <section class="card chart-wrap">
+      <svg viewBox="0 0 860 420" aria-label="תרשים השוואת מס">
+        <defs>
+          <linearGradient id="saveAreaGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="#22c55e" stop-opacity="0.25"></stop>
+            <stop offset="100%" stop-color="#22c55e" stop-opacity="0.06"></stop>
+          </linearGradient>
+        </defs>
+        <g id="chartLayer"></g>
+      </svg>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const FIXED_TAX = 2000;
+      const chart = {
+        minIncome: 15000,
+        maxIncome: 45000,
+        minTax: 2000,
+        maxTax: 17500,
+        left: 70,
+        top: 30,
+        right: 30,
+        bottom: 48,
+        width: 860,
+        height: 420
+      };
+
+      const householdOptions = [
+        { key: 'couple', label: 'זוג חברים (2.0)', points: 2.0 },
+        { key: 'single', label: 'חבר יחיד (1.3)', points: 1.3 },
+        { key: 'singleInCouple', label: 'חבר בודד בזוג (1.0)', points: 1.0 }
+      ];
+
+      const state = {
+        householdKey: 'couple',
+        kidsUnder18: 0,
+        kidsOver18: 0,
+        income: 25000
+      };
+
+      const el = {
+        householdType: document.getElementById('householdType'),
+        kidsUnderChips: document.getElementById('kidsUnderChips'),
+        kidsUnderValue: document.getElementById('kidsUnderValue'),
+        kidsOverValue: document.getElementById('kidsOverValue'),
+        kidsUnderPlus: document.getElementById('kidsUnderPlus'),
+        kidsUnderMinus: document.getElementById('kidsUnderMinus'),
+        kidsOverPlus: document.getElementById('kidsOverPlus'),
+        kidsOverMinus: document.getElementById('kidsOverMinus'),
+        incomeInput: document.getElementById('incomeInput'),
+        incomeRange: document.getElementById('incomeRange'),
+        oldTaxValue: document.getElementById('oldTaxValue'),
+        newTaxValue: document.getElementById('newTaxValue'),
+        monthlySavingsValue: document.getElementById('monthlySavingsValue'),
+        yearlySavingsValue: document.getElementById('yearlySavingsValue'),
+        pointsSummary: document.getElementById('pointsSummary'),
+        chartLayer: document.getElementById('chartLayer')
+      };
+
+      function round1(num) {
+        return Math.round(num * 10) / 10;
+      }
+
+      function formatCurrency(num) {
+        return Math.round(num).toLocaleString('he-IL') + ' ₪';
+      }
+
+      function parseIncomeText(text) {
+        const digits = (text || '').replace(/[^\d]/g, '');
+        if (!digits) return NaN;
+        return Number(digits);
+      }
+
+      function clampIncome(value) {
+        if (!Number.isFinite(value)) return state.income;
+        return Math.min(chart.maxIncome, Math.max(chart.minIncome, value));
+      }
+
+      function getUnder18Points(count) {
+        if (count <= 0) return 0;
+        if (count === 1) return 0.7;
+        if (count === 2) return 1.3;
+        if (count === 3) return 1.8;
+        return 1.8 + (count - 3) * 0.4;
+      }
+
+      function calcTotalPoints() {
+        const base = householdOptions.find(o => o.key === state.householdKey).points;
+        const under = getUnder18Points(state.kidsUnder18);
+        const over = state.kidsOver18 * 0.1;
+        return round1(base + under + over);
+      }
+
+      function oldTaxPerPoint(x) {
+        if (x <= 4000) return 0;
+        if (x <= 4250) return (x - 4000) * 0.30;
+        if (x <= 4500) return 75 + (x - 4250) * 0.34;
+        if (x <= 4750) return 160 + (x - 4500) * 0.37;
+        if (x <= 5000) return 252.5 + (x - 4750) * 0.40;
+        if (x <= 5250) return 352.5 + (x - 5000) * 0.44;
+        if (x <= 5500) return 462.5 + (x - 5250) * 0.48;
+        return 582.5 + (x - 5500) * 0.50;
+      }
+
+      function newTaxPerPoint(x) {
+        if (x <= 4000) return 0;
+        if (x <= 5000) return (x - 4000) * 0.30;
+        if (x <= 6000) return 300 + (x - 5000) * 0.34;
+        if (x <= 7000) return 640 + (x - 6000) * 0.37;
+        if (x <= 8000) return 1010 + (x - 7000) * 0.40;
+        return 1410 + (x - 8000) * 0.44;
+      }
+
+      function totalTax(income, points, calcPerPoint) {
+        const x = income / points;
+        return (calcPerPoint(x) * points) + FIXED_TAX;
+      }
+
+      function updateKPIs() {
+        const points = calcTotalPoints();
+        const oldTotal = totalTax(state.income, points, oldTaxPerPoint);
+        const newTotal = totalTax(state.income, points, newTaxPerPoint);
+        const monthly = oldTotal - newTotal;
+        const yearly = monthly * 12;
+
+        el.oldTaxValue.textContent = formatCurrency(oldTotal);
+        el.newTaxValue.textContent = formatCurrency(newTotal);
+        el.monthlySavingsValue.textContent = formatCurrency(monthly) + ' לחודש';
+        el.yearlySavingsValue.textContent = formatCurrency(yearly) + ' לשנה';
+        el.pointsSummary.textContent = 'סה"כ נקודות תקן: ' + points.toFixed(1);
+      }
+
+      function renderHouseholdButtons() {
+        el.householdType.innerHTML = '';
+        householdOptions.forEach(option => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = option.label;
+          if (state.householdKey === option.key) b.classList.add('active');
+          b.addEventListener('click', function () {
+            state.householdKey = option.key;
+            renderHouseholdButtons();
+            updateAll();
+          });
+          el.householdType.appendChild(b);
+        });
+      }
+
+      function renderKidsUnderChips() {
+        el.kidsUnderChips.innerHTML = '';
+        for (let i = 0; i <= 7; i++) {
+          const c = document.createElement('button');
+          c.type = 'button';
+          c.className = 'chip';
+          c.textContent = i === 7 ? '7+' : String(i);
+          const active = i === 7 ? state.kidsUnder18 >= 7 : state.kidsUnder18 === i;
+          if (active) c.classList.add('active');
+          c.addEventListener('click', function () {
+            state.kidsUnder18 = i === 7 ? Math.max(7, state.kidsUnder18) : i;
+            updateAll();
+          });
+          el.kidsUnderChips.appendChild(c);
+        }
+      }
+
+      function toX(income) {
+        const plotWidth = chart.width - chart.left - chart.right;
+        const ratio = (income - chart.minIncome) / (chart.maxIncome - chart.minIncome);
+        return chart.left + ratio * plotWidth;
+      }
+
+      function toY(tax) {
+        const plotHeight = chart.height - chart.top - chart.bottom;
+        const clamped = Math.max(chart.minTax, Math.min(chart.maxTax, tax));
+        const ratio = (clamped - chart.minTax) / (chart.maxTax - chart.minTax);
+        return chart.height - chart.bottom - (ratio * plotHeight);
+      }
+
+      function makePath(points) {
+        return points.map((p, i) => (i === 0 ? 'M' : 'L') + p[0] + ' ' + p[1]).join(' ');
+      }
+
+      function axisLabel(x, y, text, anchor) {
+        return '<text x="' + x + '" y="' + y + '" font-size="12" fill="#64748b" text-anchor="' + anchor + '">' + text + '</text>';
+      }
+
+      function drawChart() {
+        const points = calcTotalPoints();
+        const oldPoints = [];
+        const newPoints = [];
+
+        for (let income = chart.minIncome; income <= chart.maxIncome; income += 250) {
+          const oldTotal = totalTax(income, points, oldTaxPerPoint);
+          const newTotal = totalTax(income, points, newTaxPerPoint);
+          oldPoints.push([toX(income), toY(oldTotal)]);
+          newPoints.push([toX(income), toY(newTotal)]);
+        }
+
+        const areaPoints = oldPoints.concat(newPoints.slice().reverse());
+        const areaPath = makePath(areaPoints) + ' Z';
+        const oldPath = makePath(oldPoints);
+        const newPath = makePath(newPoints);
+
+        const currentOld = totalTax(state.income, points, oldTaxPerPoint);
+        const currentNew = totalTax(state.income, points, newTaxPerPoint);
+        const markerX = toX(state.income);
+
+        let axis = '';
+        const yTicks = [2000, 5000, 8000, 11000, 14000, 17500];
+        yTicks.forEach(v => {
+          const y = toY(v);
+          axis += '<line x1="' + chart.left + '" y1="' + y + '" x2="' + (chart.width - chart.right) + '" y2="' + y + '" stroke="#e2e8f0" />';
+          axis += axisLabel(chart.left - 8, y + 4, (v / 1000) + 'k', 'end');
+        });
+
+        const xTicks = [15000, 20000, 25000, 30000, 35000, 40000, 45000];
+        xTicks.forEach(v => {
+          const x = toX(v);
+          axis += '<line x1="' + x + '" y1="' + chart.top + '" x2="' + x + '" y2="' + (chart.height - chart.bottom) + '" stroke="#eef2f7" />';
+          axis += axisLabel(x, chart.height - 16, (v / 1000) + 'k', 'middle');
+        });
+
+        const frame = '<rect x="' + chart.left + '" y="' + chart.top + '" width="' + (chart.width - chart.left - chart.right) + '" height="' + (chart.height - chart.top - chart.bottom) + '" fill="none" stroke="#cbd5e1"/>';
+
+        const marker = [
+          '<line x1="' + markerX + '" y1="' + chart.top + '" x2="' + markerX + '" y2="' + (chart.height - chart.bottom) + '" stroke="#0f172a" stroke-dasharray="4 4"/>',
+          '<circle cx="' + markerX + '" cy="' + toY(currentOld) + '" r="4.5" fill="#dc2626"/>',
+          '<circle cx="' + markerX + '" cy="' + toY(currentNew) + '" r="4.5" fill="#2563eb"/>'
+        ].join('');
+
+        el.chartLayer.innerHTML = [
+          axis,
+          frame,
+          '<path d="' + areaPath + '" fill="url(#saveAreaGrad)"/>',
+          '<path d="' + oldPath + '" fill="none" stroke="#dc2626" stroke-width="3"/>',
+          '<path d="' + newPath + '" fill="none" stroke="#2563eb" stroke-width="3" stroke-dasharray="8 6"/>',
+          marker,
+          axisLabel(chart.width - chart.right, chart.top - 8, 'מס כולל (₪)', 'end'),
+          axisLabel(chart.left, chart.top - 8, 'השוואת מס לפי הכנסה', 'start')
+        ].join('');
+      }
+
+      function normalizeCounts() {
+        state.kidsUnder18 = Math.max(0, Math.min(25, state.kidsUnder18));
+        state.kidsOver18 = Math.max(0, Math.min(25, state.kidsOver18));
+      }
+
+      function updateAll() {
+        normalizeCounts();
+        el.kidsUnderValue.textContent = state.kidsUnder18;
+        el.kidsOverValue.textContent = state.kidsOver18;
+        el.incomeRange.value = state.income;
+        el.incomeInput.value = state.income.toLocaleString('he-IL');
+        renderKidsUnderChips();
+        updateKPIs();
+        drawChart();
+      }
+
+      el.kidsUnderPlus.addEventListener('click', function () {
+        state.kidsUnder18 += 1;
+        updateAll();
+      });
+
+      el.kidsUnderMinus.addEventListener('click', function () {
+        state.kidsUnder18 -= 1;
+        updateAll();
+      });
+
+      el.kidsOverPlus.addEventListener('click', function () {
+        state.kidsOver18 += 1;
+        updateAll();
+      });
+
+      el.kidsOverMinus.addEventListener('click', function () {
+        state.kidsOver18 -= 1;
+        updateAll();
+      });
+
+      el.incomeRange.addEventListener('input', function (event) {
+        state.income = clampIncome(Number(event.target.value));
+        updateAll();
+      });
+
+      el.incomeInput.addEventListener('input', function (event) {
+        const value = parseIncomeText(event.target.value);
+        if (Number.isFinite(value)) {
+          state.income = clampIncome(value);
+          updateAll();
+        }
+      });
+
+      el.incomeInput.addEventListener('blur', function () {
+        state.income = clampIncome(parseIncomeText(el.incomeInput.value));
+        updateAll();
+      });
+
+      renderHouseholdButtons();
+      updateAll();
+    })();
+  </script>
+</body>
+</html>
