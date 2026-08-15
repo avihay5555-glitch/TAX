@@ -1106,11 +1106,11 @@
       els.manualPointsToggleBtn.textContent = state.manualEntryOpen ? "בטלו הזנה ידנית" : "הזנה ידנית (אופציונלי)";
       els.manualPointsInput.value = state.manualPoints == null ? "" : numberFormatter.format(state.manualPoints);
       const manualMode = metrics.usesManualPoints;
-      els.manualPointsMode.textContent = manualMode ? "מצב ידני פעיל" : "מצב ידני פתוח";
+      els.manualPointsMode.textContent = !state.manualEntryOpen ? "חישוב אוטומטי" : (manualMode ? "מצב ידני פעיל" : "מצב ידני פתוח");
       els.manualPointsSummary.textContent = manualMode
         ? `מוזנות ${numberFormatter.format(metrics.points)} נקודות ידנית במקום ${numberFormatter.format(metrics.autoPoints)} נקודות מחושבות.`
         : "אפשר להזין ניקוד ידני, או להשאיר ריק כדי להמשיך עם חישוב אוטומטי.";
-      els.clearManualPointsBtn.disabled = !state.manualEntryOpen || !state.manualPoints;
+      els.clearManualPointsBtn.disabled = !state.manualEntryOpen || state.manualPoints == null;
       els.clearManualPointsBtn.style.opacity = els.clearManualPointsBtn.disabled ? "0.65" : "1";
     }
 
