@@ -673,6 +673,8 @@
       incomeAbsoluteMax: 70000,
       kidsMax: 15
     };
+    const FIXED_TAX_COUPLE = 2000;
+    const FIXED_TAX_SINGLE = 1000;
     const CHART_SAMPLE_COUNT = 36;
     const CHART_X_LABELS = [LIMITS.incomeMin, 25000, 35000, LIMITS.incomeRangeMax, 55000, LIMITS.incomeAbsoluteMax];
 
@@ -752,7 +754,7 @@
     }
 
     function getFixedHouseholdTax(householdType = state.householdType) {
-      return householdType === "couple" ? 2000 : 1000;
+      return householdType === "couple" ? FIXED_TAX_COUPLE : FIXED_TAX_SINGLE;
     }
 
     function oldTaxPerPoint(x) {
