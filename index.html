@@ -1,0 +1,1017 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="מס איזון">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="מחשבון מס איזון להשוואה בין מנגנון ישן למעודכן עבור משקי בית בקיבוץ.">
+  <title>מחשבון מס איזון</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg-1: #f8fbff;
+      --bg-2: #eef4ff;
+      --text: #10203a;
+      --muted: #5f6f8a;
+      --surface: rgba(255, 255, 255, 0.72);
+      --surface-strong: rgba(255, 255, 255, 0.9);
+      --border: rgba(148, 163, 184, 0.25);
+      --shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+      --blue: #2c67f2;
+      --blue-soft: rgba(44, 103, 242, 0.12);
+      --red: #df5a6f;
+      --red-soft: rgba(223, 90, 111, 0.12);
+      --green: #179b67;
+      --green-soft: rgba(23, 155, 103, 0.14);
+      --card-radius: 24px;
+      --chip-radius: 999px;
+      --transition: 160ms ease;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(44, 103, 242, 0.18), transparent 35%),
+        radial-gradient(circle at top left, rgba(23, 155, 103, 0.12), transparent 40%),
+        linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      color: var(--text);
+    }
+
+    body {
+      padding: max(16px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+    }
+
+    .app {
+      width: min(100%, 1100px);
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(14px);
+      border-radius: var(--card-radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    h1, h2, h3, p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(1.8rem, 5vw, 2.7rem);
+      line-height: 1.08;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.98rem;
+      line-height: 1.5;
+      max-width: 62ch;
+    }
+
+    .action-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    .btn {
+      border: 0;
+      padding: 12px 16px;
+      border-radius: 16px;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition), opacity var(--transition);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+      font-weight: 700;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.12);
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, #2c67f2, #1746b7);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .controls {
+      padding: 18px;
+    }
+
+    .controls-grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .group {
+      display: grid;
+      gap: 10px;
+    }
+
+    .group-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.96rem;
+      font-weight: 800;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 500;
+    }
+
+    .segmented,
+    .chips {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill,
+    .chip {
+      appearance: none;
+      border: 1px solid rgba(44, 103, 242, 0.12);
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: var(--chip-radius);
+      color: var(--text);
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform var(--transition), background var(--transition), border-color var(--transition), color var(--transition);
+    }
+
+    .pill:active,
+    .chip:active {
+      transform: scale(0.97);
+    }
+
+    .pill.active,
+    .chip.active {
+      background: linear-gradient(135deg, rgba(44, 103, 242, 0.96), rgba(23, 70, 183, 0.92));
+      border-color: transparent;
+      color: #fff;
+    }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 10px;
+    }
+
+    .stepper button {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      border: 0;
+      background: rgba(44, 103, 242, 0.12);
+      color: var(--blue);
+      font-size: 1.4rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform var(--transition), background var(--transition);
+    }
+
+    .stepper button:active {
+      transform: scale(0.95);
+      background: rgba(44, 103, 242, 0.2);
+    }
+
+    .stepper-value {
+      display: grid;
+      gap: 4px;
+      text-align: center;
+    }
+
+    .stepper-number {
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .income-card {
+      padding: 18px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(244, 247, 255, 0.9));
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      display: grid;
+      gap: 14px;
+    }
+
+    .income-display {
+      display: grid;
+      gap: 4px;
+    }
+
+    .income-value {
+      font-size: clamp(2rem, 8vw, 3.6rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .income-edit {
+      width: 100%;
+      border: 0;
+      background: rgba(44, 103, 242, 0.08);
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text);
+      text-align: center;
+      outline: 2px solid transparent;
+      transition: outline-color var(--transition), background var(--transition);
+    }
+
+    .income-edit:focus {
+      outline-color: rgba(44, 103, 242, 0.32);
+      background: rgba(44, 103, 242, 0.12);
+    }
+
+    .range-wrap {
+      display: grid;
+      gap: 10px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      appearance: none;
+      height: 14px;
+      background: linear-gradient(90deg, rgba(44, 103, 242, 0.22), rgba(23, 155, 103, 0.22));
+      border-radius: 999px;
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #fff;
+      border: 4px solid var(--blue);
+      box-shadow: 0 10px 20px rgba(44, 103, 242, 0.24);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #fff;
+      border: 4px solid var(--blue);
+      box-shadow: 0 10px 20px rgba(44, 103, 242, 0.24);
+    }
+
+    .range-legend {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .stats {
+      display: grid;
+      gap: 14px;
+    }
+
+    .stats-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    .stat-card {
+      padding: 18px;
+      border-radius: 24px;
+      background: var(--surface-strong);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      display: grid;
+      gap: 10px;
+      min-height: 160px;
+    }
+
+    .stat-card.old { background: linear-gradient(180deg, rgba(255, 245, 247, 0.96), rgba(255, 239, 243, 0.92)); }
+    .stat-card.new { background: linear-gradient(180deg, rgba(241, 247, 255, 0.96), rgba(232, 242, 255, 0.92)); }
+    .stat-card.save { background: linear-gradient(180deg, rgba(237, 251, 245, 0.98), rgba(229, 248, 238, 0.94)); }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      font-size: clamp(1.7rem, 5vw, 2.4rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+    }
+
+    .stat-subgrid {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .mini {
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .mini strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.05rem;
+    }
+
+    .summary {
+      padding: 18px;
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .summary strong {
+      color: var(--text);
+    }
+
+    .chart-panel {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .chart-box {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 247, 255, 0.88));
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.18);
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .swatch {
+      width: 22px;
+      height: 10px;
+      border-radius: 999px;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-align: center;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    @media (min-width: 860px) {
+      .main-grid {
+        grid-template-columns: minmax(320px, 430px) minmax(0, 1fr);
+        align-items: start;
+      }
+      .hero {
+        padding: 24px;
+      }
+      .controls,
+      .chart-panel,
+      .summary {
+        padding: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="panel hero">
+      <div class="hero-top">
+        <div>
+          <p class="hint">מחשבון מהיר · מותאם לנייד · חד-עמודי</p>
+          <h1>השוואת מס איזון למשק בית בקיבוץ</h1>
+          <p class="subtitle">השוו בין המנגנון הישן למנגנון המעודכן, ראו כמה תחסכו בכל חודש, ומה תהיה ההשפעה השנתית על משק הבית.</p>
+        </div>
+        <div class="action-bar">
+          <button class="btn btn-primary" id="shareBtn" type="button">שיתוף האפליקציה</button>
+          <button class="btn btn-secondary" id="resetBtn" type="button">איפוס מהיר</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid main-grid">
+      <div class="panel controls">
+        <div class="controls-grid">
+          <div class="group">
+            <div class="group-title">
+              <span>סוג משק בית</span>
+              <span class="hint">קובע את נקודות הבסיס</span>
+            </div>
+            <div class="segmented" id="householdType"></div>
+          </div>
+
+          <div class="group">
+            <div class="group-title">
+              <span>ילדים עד גיל 18</span>
+              <span class="hint">צ׳יפים מהירים + שליטה ידנית</span>
+            </div>
+            <div class="chips" id="kidsUnderChips"></div>
+            <div class="stepper">
+              <button type="button" data-step="under" data-dir="-1" aria-label="הפחתת ילדים עד גיל 18">−</button>
+              <div class="stepper-value">
+                <span class="stepper-number" id="kidsUnderValue">0</span>
+                <span class="hint">ילדים עד גיל 18</span>
+              </div>
+              <button type="button" data-step="under" data-dir="1" aria-label="הוספת ילדים עד גיל 18">+</button>
+            </div>
+          </div>
+
+          <div class="group">
+            <div class="group-title">
+              <span>ילדים מגיל 18 ומעלה</span>
+              <span class="hint">0.1 נקודה לכל ילד</span>
+            </div>
+            <div class="stepper">
+              <button type="button" data-step="adult" data-dir="-1" aria-label="הפחתת ילדים מעל גיל 18">−</button>
+              <div class="stepper-value">
+                <span class="stepper-number" id="kidsAdultValue">0</span>
+                <span class="hint">ילדים מעל גיל 18</span>
+              </div>
+              <button type="button" data-step="adult" data-dir="1" aria-label="הוספת ילדים מעל גיל 18">+</button>
+            </div>
+          </div>
+
+          <div class="income-card">
+            <div class="group-title">
+              <span>הכנסה נטו חודשית</span>
+              <span class="hint">טווח מהיר 15,000–45,000 ₪ · הזנה ידנית עד 70,000 ₪</span>
+            </div>
+            <div class="income-display">
+              <div class="income-value" id="incomeDisplay">₪ 22,000</div>
+              <input class="income-edit" id="incomeInput" inputmode="numeric" type="text" aria-label="הכנסה נטו חודשית">
+            </div>
+            <div class="range-wrap">
+              <input id="incomeRange" type="range" min="15000" max="45000" step="500" value="22000" aria-label="בחירת הכנסה">
+              <div class="range-legend">
+                <span>15,000 ₪</span>
+                <span>45,000 ₪</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <section class="stats">
+          <div class="stats-grid">
+            <article class="stat-card old">
+              <span class="stat-label">סך מס חודשי · מנגנון ישן</span>
+              <strong class="stat-value" id="oldTaxValue">₪ 0</strong>
+              <div class="mini">
+                <span class="hint">מס לנקודה</span>
+                <strong id="oldTaxPerPointValue">₪ 0</strong>
+              </div>
+            </article>
+
+            <article class="stat-card new">
+              <span class="stat-label">סך מס חודשי · מנגנון מעודכן</span>
+              <strong class="stat-value" id="newTaxValue">₪ 0</strong>
+              <div class="mini">
+                <span class="hint">מס לנקודה</span>
+                <strong id="newTaxPerPointValue">₪ 0</strong>
+              </div>
+            </article>
+
+            <article class="stat-card save" id="deltaCard">
+              <span class="stat-label" id="deltaLabel">חיסכון למשק הבית</span>
+              <strong class="stat-value" id="monthlySavingsValue">₪ 0</strong>
+              <div class="stat-subgrid">
+                <div class="mini">
+                  <span class="hint" id="yearlyLabel">חיסכון שנתי</span>
+                  <strong id="yearlySavingsValue">₪ 0</strong>
+                </div>
+                <div class="mini">
+                  <span class="hint" id="reductionLabel">% ירידה</span>
+                  <strong id="reductionValue">0%</strong>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="panel summary">
+          <div><strong>נקודות תקן:</strong> <span id="pointsValue">0.0</span></div>
+          <div><strong>הכנסה לנקודה:</strong> <span id="incomePerPointValue">₪ 0</span></div>
+          <div><strong>מס קבוע:</strong> 2,000 ₪ לכל משק בית</div>
+        </section>
+
+        <section class="panel chart-panel">
+          <div class="group-title">
+            <span>עקומות מס פרוגרסיביות לפי הרכב משק הבית שנבחר</span>
+            <span class="hint">אזור ירוק = החיסכון הישיר למשק הבית עבור נקודות התקן שנבחרו</span>
+          </div>
+          <div class="legend">
+            <span class="legend-item"><span class="swatch" style="background: var(--red);"></span>מנגנון ישן</span>
+            <span class="legend-item"><span class="swatch" style="background: var(--blue);"></span>מנגנון מעודכן</span>
+            <span class="legend-item"><span class="swatch" style="background: rgba(23,155,103,.24);"></span>אזור חיסכון</span>
+          </div>
+          <div class="chart-box">
+            <svg id="taxChart" viewBox="0 0 760 420" aria-labelledby="chartTitle chartDesc" role="img">
+              <title id="chartTitle">גרף השוואת מס איזון לפי הרכב משק הבית</title>
+              <desc id="chartDesc">גרף SVG המשווה בין סך המס במנגנון הישן לבין המנגנון המעודכן עבור ההכנסה ונקודות התקן שנבחרו.</desc>
+            </svg>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <p class="footer-note">החישוב מבוסס על כללי נקודות התקן ומדרגות המס שסופקו. מומלץ לאמת מול הנהלת הקיבוץ לפני קבלת החלטות כספיות.</p>
+  </main>
+
+  <script>
+    const HOUSEHOLDS = [
+      { key: "couple", label: "זוג חברים", points: 2.0 },
+      { key: "single", label: "חבר יחיד", points: 1.3 },
+      { key: "singleInCouple", label: "חבר בודד בזוג", points: 1.0 }
+    ];
+
+    const DEFAULT_STATE = {
+      householdType: "couple",
+      kidsUnder18: 2,
+      kids18Plus: 0,
+      income: 22000
+    };
+
+    const LIMITS = {
+      incomeMin: 15000,
+      incomeRangeMax: 45000,
+      incomeAbsoluteMax: 70000,
+      kidsMax: 15
+    };
+    const FIXED_HOUSEHOLD_TAX = 2000;
+    const CHART_SAMPLE_COUNT = 36;
+    const CHART_X_LABELS = [LIMITS.incomeMin, 25000, 35000, LIMITS.incomeRangeMax, 55000, LIMITS.incomeAbsoluteMax];
+
+    const state = { ...DEFAULT_STATE };
+    let isEditingIncome = false;
+
+    const els = {
+      householdType: document.getElementById("householdType"),
+      kidsUnderChips: document.getElementById("kidsUnderChips"),
+      kidsUnderValue: document.getElementById("kidsUnderValue"),
+      kidsAdultValue: document.getElementById("kidsAdultValue"),
+      incomeDisplay: document.getElementById("incomeDisplay"),
+      incomeInput: document.getElementById("incomeInput"),
+      incomeRange: document.getElementById("incomeRange"),
+      oldTaxValue: document.getElementById("oldTaxValue"),
+      newTaxValue: document.getElementById("newTaxValue"),
+      oldTaxPerPointValue: document.getElementById("oldTaxPerPointValue"),
+      newTaxPerPointValue: document.getElementById("newTaxPerPointValue"),
+      monthlySavingsValue: document.getElementById("monthlySavingsValue"),
+      yearlySavingsValue: document.getElementById("yearlySavingsValue"),
+      reductionValue: document.getElementById("reductionValue"),
+      deltaCard: document.getElementById("deltaCard"),
+      deltaLabel: document.getElementById("deltaLabel"),
+      yearlyLabel: document.getElementById("yearlyLabel"),
+      reductionLabel: document.getElementById("reductionLabel"),
+      pointsValue: document.getElementById("pointsValue"),
+      incomePerPointValue: document.getElementById("incomePerPointValue"),
+      taxChart: document.getElementById("taxChart"),
+      shareBtn: document.getElementById("shareBtn"),
+      resetBtn: document.getElementById("resetBtn")
+    };
+
+    const currencyFormatter = new Intl.NumberFormat("he-IL", {
+      style: "currency",
+      currency: "ILS",
+      maximumFractionDigits: 0
+    });
+
+    const numberFormatter = new Intl.NumberFormat("he-IL", {
+      maximumFractionDigits: 1,
+      minimumFractionDigits: 1
+    });
+    const themeStyles = getComputedStyle(document.documentElement);
+    const chartColors = {
+      red: themeStyles.getPropertyValue("--red").trim(),
+      blue: themeStyles.getPropertyValue("--blue").trim()
+    };
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function roundToOne(value) {
+      return Math.round(value * 10) / 10;
+    }
+
+    function formatCurrency(value) {
+      return currencyFormatter.format(Math.round(value));
+    }
+
+    function getKidsPoints(kidsUnder18, kids18Plus) {
+      let underPoints = 0;
+      for (let i = 1; i <= kidsUnder18; i += 1) {
+        if (i === 1) underPoints += 0.7;
+        else if (i === 2) underPoints += 0.6;
+        else if (i === 3) underPoints += 0.5;
+        else underPoints += 0.4;
+      }
+      return underPoints + (kids18Plus * 0.1);
+    }
+
+    function getTotalPoints() {
+      const base = HOUSEHOLDS.find((item) => item.key === state.householdType)?.points ?? 0;
+      return roundToOne(base + getKidsPoints(state.kidsUnder18, state.kids18Plus));
+    }
+
+    function oldTaxPerPoint(x) {
+      if (x <= 4000) return 0;
+      if (x <= 4250) return (x - 4000) * 0.30;
+      if (x <= 4500) return 75 + (x - 4250) * 0.34;
+      if (x <= 4750) return 160 + (x - 4500) * 0.37;
+      if (x <= 5000) return 252.5 + (x - 4750) * 0.40;
+      if (x <= 5250) return 352.5 + (x - 5000) * 0.44;
+      if (x <= 5500) return 462.5 + (x - 5250) * 0.48;
+      return 582.5 + (x - 5500) * 0.50;
+    }
+
+    function newTaxPerPoint(x) {
+      if (x <= 4000) return 0;
+      if (x <= 5000) return (x - 4000) * 0.30;
+      if (x <= 6000) return 300 + (x - 5000) * 0.34;
+      if (x <= 7000) return 640 + (x - 6000) * 0.37;
+      if (x <= 8000) return 1010 + (x - 7000) * 0.40;
+      return 1410 + (x - 8000) * 0.44;
+    }
+
+    function calculate() {
+      const points = getTotalPoints();
+      if (points <= 0) {
+        return {
+          points: 0,
+          incomePerPoint: 0,
+          oldPointTax: 0,
+          newPointTax: 0,
+          oldTotal: FIXED_HOUSEHOLD_TAX,
+          newTotal: FIXED_HOUSEHOLD_TAX,
+          delta: 0,
+          savings: 0,
+          extraCost: 0,
+          yearlySavings: 0,
+          yearlyDelta: 0,
+          reduction: 0
+        };
+      }
+      const incomePerPoint = state.income / points;
+      const oldPointTax = oldTaxPerPoint(incomePerPoint);
+      const newPointTax = newTaxPerPoint(incomePerPoint);
+      const oldTotal = oldPointTax * points + FIXED_HOUSEHOLD_TAX;
+      const newTotal = newPointTax * points + FIXED_HOUSEHOLD_TAX;
+      const delta = oldTotal - newTotal;
+      const savings = Math.max(0, delta);
+      const extraCost = Math.max(0, -delta);
+      const reduction = oldTotal > 0 ? (delta / oldTotal) * 100 : 0;
+
+      return {
+        points,
+        incomePerPoint,
+        oldPointTax,
+        newPointTax,
+        oldTotal,
+        newTotal,
+        delta,
+        savings,
+        extraCost,
+        yearlySavings: savings * 12,
+        yearlyDelta: delta * 12,
+        reduction
+      };
+    }
+
+    function createHouseholdPills() {
+      els.householdType.innerHTML = "";
+      HOUSEHOLDS.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `pill${state.householdType === item.key ? " active" : ""}`;
+        button.textContent = `${item.label} · ${item.points.toFixed(1)}`;
+        button.addEventListener("click", () => {
+          state.householdType = item.key;
+          render();
+        });
+        els.householdType.appendChild(button);
+      });
+    }
+
+    function createUnder18Chips() {
+      els.kidsUnderChips.innerHTML = "";
+      ["0", "1", "2", "3", "4", "5", "6", "7+"].forEach((label) => {
+        const value = label === "7+" ? 7 : Number(label);
+        const button = document.createElement("button");
+        button.type = "button";
+        const isActive = label === "7+" ? state.kidsUnder18 >= 7 : state.kidsUnder18 === value;
+        button.className = `chip${isActive ? " active" : ""}`;
+        button.textContent = label;
+        button.addEventListener("click", () => {
+          state.kidsUnder18 = value;
+          render();
+        });
+        els.kidsUnderChips.appendChild(button);
+      });
+    }
+
+    function syncIncomeUI() {
+      els.incomeDisplay.textContent = formatCurrency(state.income);
+      if (!isEditingIncome) {
+        els.incomeInput.value = state.income.toLocaleString("he-IL");
+      }
+      els.incomeRange.value = String(clamp(state.income, LIMITS.incomeMin, LIMITS.incomeRangeMax));
+    }
+
+    function renderChart(metrics) {
+      if (metrics.points <= 0) {
+        els.taxChart.innerHTML = "";
+        return;
+      }
+      const svg = els.taxChart;
+      const width = 760;
+      const height = 420;
+      const padding = { top: 24, right: 18, bottom: 44, left: 62 };
+      const chartW = width - padding.left - padding.right;
+      const chartH = height - padding.top - padding.bottom;
+      const maxIncome = LIMITS.incomeAbsoluteMax;
+      const points = metrics.points;
+
+      const samples = Array.from(
+        { length: CHART_SAMPLE_COUNT },
+        (_, i) => LIMITS.incomeMin + ((maxIncome - LIMITS.incomeMin) * i) / (CHART_SAMPLE_COUNT - 1)
+      );
+      const chartData = samples.map((income) => {
+        const perPoint = income / points;
+        return {
+          income,
+          oldTotal: oldTaxPerPoint(perPoint) * points + FIXED_HOUSEHOLD_TAX,
+          newTotal: newTaxPerPoint(perPoint) * points + FIXED_HOUSEHOLD_TAX
+        };
+      });
+
+      const currentOld = metrics.oldTotal;
+      const currentNew = metrics.newTotal;
+      const maxSeriesValue = chartData.reduce((maxValue, item) => {
+        return Math.max(maxValue, item.oldTotal, item.newTotal);
+      }, Math.max(currentOld, currentNew));
+      const maxY = maxSeriesValue * 1.08;
+
+      const scaleX = (income) => padding.left + ((income - LIMITS.incomeMin) / (maxIncome - LIMITS.incomeMin)) * chartW;
+      const scaleY = (value) => padding.top + chartH - (value / maxY) * chartH;
+
+      const oldPath = chartData.map((item, index) => `${index === 0 ? "M" : "L"} ${scaleX(item.income).toFixed(2)} ${scaleY(item.oldTotal).toFixed(2)}`).join(" ");
+      const newPath = chartData.map((item, index) => `${index === 0 ? "M" : "L"} ${scaleX(item.income).toFixed(2)} ${scaleY(item.newTotal).toFixed(2)}`).join(" ");
+      const areaPaths = [];
+      for (let i = 0; i < chartData.length - 1; i += 1) {
+        const start = chartData[i];
+        const end = chartData[i + 1];
+        const startDiff = start.oldTotal - start.newTotal;
+        const endDiff = end.oldTotal - end.newTotal;
+        const x1 = scaleX(start.income);
+        const x2 = scaleX(end.income);
+        const oldY1 = scaleY(start.oldTotal);
+        const oldY2 = scaleY(end.oldTotal);
+        const newY1 = scaleY(start.newTotal);
+        const newY2 = scaleY(end.newTotal);
+
+        if (startDiff <= 0 && endDiff <= 0) continue;
+
+        if (startDiff > 0 && endDiff > 0) {
+          areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
+          continue;
+        }
+
+        const ratio = startDiff / (startDiff - endDiff);
+        const crossX = x1 + ((x2 - x1) * ratio);
+        const crossY = oldY1 + ((oldY2 - oldY1) * ratio);
+
+        if (startDiff > 0) {
+          areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
+        } else if (endDiff > 0) {
+          areaPaths.push(`M ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} Z`);
+        }
+      }
+      const trackerX = scaleX(state.income);
+      const trackerOldY = scaleY(currentOld);
+      const trackerNewY = scaleY(currentNew);
+
+      const yGrid = Array.from({ length: 5 }, (_, i) => (maxY / 4) * i);
+      svg.innerHTML = `
+        <defs>
+          <linearGradient id="fillArea" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="rgba(23,155,103,0.26)"></stop>
+            <stop offset="100%" stop-color="rgba(23,155,103,0.08)"></stop>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="${width}" height="${height}" rx="24" fill="transparent"></rect>
+        ${yGrid.map((value) => `
+          <g>
+            <line x1="${padding.left}" x2="${width - padding.right}" y1="${scaleY(value)}" y2="${scaleY(value)}" stroke="rgba(148,163,184,0.25)" stroke-width="1"></line>
+            <text x="${padding.left - 10}" y="${scaleY(value) + 4}" font-size="12" fill="#5f6f8a" text-anchor="end">${Math.round(value).toLocaleString("he-IL")}</text>
+          </g>
+        `).join("")}
+        ${CHART_X_LABELS.map((income) => `
+          <g>
+            <line x1="${scaleX(income)}" x2="${scaleX(income)}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="rgba(148,163,184,0.12)" stroke-width="1"></line>
+            <text x="${scaleX(income)}" y="${height - 16}" font-size="12" fill="#5f6f8a" text-anchor="middle">${income.toLocaleString("he-IL")}</text>
+          </g>
+        `).join("")}
+        ${areaPaths.map((path) => `<path d="${path}" fill="url(#fillArea)"></path>`).join("")}
+        <path d="${oldPath}" fill="none" stroke="${chartColors.red}" stroke-width="4" stroke-linecap="round"></path>
+        <path d="${newPath}" fill="none" stroke="${chartColors.blue}" stroke-width="4" stroke-linecap="round" stroke-dasharray="12 10"></path>
+        <line x1="${trackerX}" x2="${trackerX}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="#0f172a" stroke-width="2" stroke-dasharray="4 6"></line>
+        <circle cx="${trackerX}" cy="${trackerOldY}" r="7" fill="${chartColors.red}"></circle>
+        <circle cx="${trackerX}" cy="${trackerNewY}" r="7" fill="${chartColors.blue}"></circle>
+        <g transform="translate(${Math.min(width - 210, Math.max(18, trackerX - 105))}, ${Math.max(20, Math.min(height - 110, trackerNewY - 78))})">
+          <rect width="192" height="84" rx="18" fill="rgba(255,255,255,0.96)" stroke="rgba(148,163,184,0.22)"></rect>
+          <text x="16" y="24" font-size="13" font-weight="700" fill="#10203a">הכנסה: ${formatCurrency(state.income)}</text>
+          <text x="16" y="46" font-size="12.5" fill="#df5a6f">ישן: ${formatCurrency(currentOld)}</text>
+          <text x="16" y="66" font-size="12.5" fill="#2c67f2">מעודכן: ${formatCurrency(currentNew)}</text>
+        </g>
+      `;
+    }
+
+    function render() {
+      const metrics = calculate();
+      createHouseholdPills();
+      createUnder18Chips();
+      syncIncomeUI();
+
+      els.kidsUnderValue.textContent = String(state.kidsUnder18);
+      els.kidsAdultValue.textContent = String(state.kids18Plus);
+      els.pointsValue.textContent = numberFormatter.format(metrics.points);
+      els.incomePerPointValue.textContent = formatCurrency(metrics.incomePerPoint);
+      els.oldTaxValue.textContent = formatCurrency(metrics.oldTotal);
+      els.newTaxValue.textContent = formatCurrency(metrics.newTotal);
+      els.oldTaxPerPointValue.textContent = formatCurrency(metrics.oldPointTax);
+      els.newTaxPerPointValue.textContent = formatCurrency(metrics.newPointTax);
+      const hasSavings = metrics.delta >= 0;
+      els.deltaCard.classList.toggle("old", !hasSavings);
+      els.deltaCard.classList.toggle("save", hasSavings);
+      els.deltaLabel.textContent = hasSavings ? "חיסכון למשק הבית" : "תוספת עלות למשק הבית";
+      els.yearlyLabel.textContent = hasSavings ? "חיסכון שנתי" : "תוספת עלות שנתית";
+      els.reductionLabel.textContent = hasSavings ? "% ירידה" : "% שינוי";
+      els.monthlySavingsValue.textContent = formatCurrency(hasSavings ? metrics.savings : metrics.extraCost);
+      els.yearlySavingsValue.textContent = formatCurrency(Math.abs(metrics.yearlyDelta));
+      els.reductionValue.textContent = `${Math.abs(metrics.reduction).toFixed(1)}%`;
+
+      renderChart(metrics);
+    }
+
+    function setIncome(nextIncome) {
+      state.income = clamp(nextIncome, LIMITS.incomeMin, LIMITS.incomeAbsoluteMax);
+      render();
+    }
+
+    document.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-step]");
+      if (!button) return;
+      const dir = Number(button.dataset.dir);
+      if (button.dataset.step === "under") {
+        state.kidsUnder18 = clamp(state.kidsUnder18 + dir, 0, LIMITS.kidsMax);
+      } else {
+        state.kids18Plus = clamp(state.kids18Plus + dir, 0, LIMITS.kidsMax);
+      }
+      render();
+    });
+
+    els.incomeRange.addEventListener("input", (event) => {
+      setIncome(Number(event.target.value));
+    });
+
+    els.incomeInput.addEventListener("focus", () => {
+      isEditingIncome = true;
+      els.incomeInput.value = String(state.income);
+      els.incomeInput.select();
+    });
+
+    els.incomeInput.addEventListener("input", (event) => {
+      const digits = event.target.value.replace(/[^\d]/g, "");
+      if (!digits) {
+        event.target.value = "";
+        return;
+      }
+      const nextIncome = Number(digits);
+      event.target.value = digits;
+      if (nextIncome >= LIMITS.incomeMin && nextIncome <= LIMITS.incomeAbsoluteMax) {
+        state.income = nextIncome;
+        render();
+      }
+    });
+
+    els.incomeInput.addEventListener("blur", () => {
+      isEditingIncome = false;
+      const digits = els.incomeInput.value.replace(/[^\d]/g, "");
+      setIncome(Number(digits || DEFAULT_STATE.income));
+    });
+
+    els.incomeInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        els.incomeInput.blur();
+      }
+    });
+
+    els.shareBtn.addEventListener("click", async () => {
+      const payload = {
+        title: document.title,
+        text: "מחשבון מס איזון להשוואה בין המנגנון הישן למעודכן",
+        url: window.location.href
+      };
+
+      try {
+        if (navigator.share) {
+          await navigator.share(payload);
+        } else if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(window.location.href);
+          window.alert("הקישור הועתק ללוח.");
+        } else {
+          window.prompt("העתיקו את הקישור:", window.location.href);
+        }
+      } catch (error) {
+        if (error?.name !== "AbortError") {
+          window.alert("לא הצלחנו לשתף כרגע.");
+        }
+      }
+    });
+
+    els.resetBtn.addEventListener("click", () => {
+      Object.assign(state, DEFAULT_STATE);
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
