@@ -768,8 +768,8 @@
 
     function createUnder18Chips() {
       els.kidsUnderChips.innerHTML = "";
-      ["0", "1", "2", "3", "4", "5", "6", "7+"].forEach((label, index) => {
-        const value = label === "7+" ? 7 : index;
+      ["0", "1", "2", "3", "4", "5", "6", "7+"].forEach((label) => {
+        const value = label === "7+" ? 7 : Number(label);
         const button = document.createElement("button");
         button.type = "button";
         const isActive = label === "7+" ? state.kidsUnder18 >= 7 : state.kidsUnder18 === value;
@@ -851,12 +851,10 @@
         const crossX = x1 + ((x2 - x1) * ratio);
         const crossOldY = oldY1 + ((oldY2 - oldY1) * ratio);
         const crossNewY = newY1 + ((newY2 - newY1) * ratio);
-        const crossY = (crossOldY + crossNewY) / 2;
-
         if (startDiff > 0) {
-          areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
+          areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${crossX.toFixed(2)} ${crossOldY.toFixed(2)} L ${crossX.toFixed(2)} ${crossNewY.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
         } else {
-          areaPaths.push(`M ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} Z`);
+          areaPaths.push(`M ${crossX.toFixed(2)} ${crossOldY.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} L ${crossX.toFixed(2)} ${crossNewY.toFixed(2)} Z`);
         }
       }
       const trackerX = scaleX(state.income);
