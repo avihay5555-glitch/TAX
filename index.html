@@ -614,6 +614,7 @@
     };
 
     const state = { ...DEFAULT_STATE };
+    let isEditingIncome = false;
 
     const els = {
       householdType: document.getElementById("householdType"),
@@ -752,7 +753,9 @@
 
     function syncIncomeUI() {
       els.incomeDisplay.textContent = formatCurrency(state.income);
-      els.incomeInput.value = formatCurrency(state.income).replace("₪", "").trim();
+      if (!isEditingIncome) {
+        els.incomeInput.value = state.income.toLocaleString("he-IL");
+      }
       els.incomeRange.value = String(clamp(state.income, LIMITS.incomeMin, LIMITS.incomeRangeMax));
     }
 
@@ -876,17 +879,38 @@
       setIncome(Number(event.target.value));
     });
 
+    els.incomeInput.addEventListener("focus", () => {
+      isEditingIncome = true;
+      els.incomeInput.value = String(state.income);
+      els.incomeInput.select();
+    });
+
     els.incomeInput.addEventListener("input", (event) => {
       const digits = event.target.value.replace(/[^\d]/g, "");
       if (!digits) {
         event.target.value = "";
         return;
       }
-      setIncome(Number(digits));
+      const nextIncome = Number(digits);
+      event.target.value = digits;
+      if (nextIncome >= LIMITS.incomeMin && nextIncome <= LIMITS.incomeAbsoluteMax) {
+        state.income = nextIncome;
+        render();
+      }
     });
 
     els.incomeInput.addEventListener("blur", () => {
+      isEditingIncome = false;
+      const digits = els.incomeInput.value.replace(/[^\d]/g, "");
+      setIncome(Number(digits || DEFAULT_STATE.income));
       render();
+    });
+
+    els.incomeInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        els.incomeInput.blur();
+      }
     });
 
     els.shareBtn.addEventListener("click", async () => {
