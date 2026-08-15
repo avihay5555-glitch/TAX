@@ -709,6 +709,22 @@
 
     function calculate() {
       const points = getTotalPoints();
+      if (points <= 0) {
+        return {
+          points: 0,
+          incomePerPoint: 0,
+          oldPointTax: 0,
+          newPointTax: 0,
+          oldTotal: FIXED_HOUSEHOLD_TAX,
+          newTotal: FIXED_HOUSEHOLD_TAX,
+          delta: 0,
+          savings: 0,
+          extraCost: 0,
+          yearlySavings: 0,
+          yearlyDelta: 0,
+          reduction: 0
+        };
+      }
       const incomePerPoint = state.income / points;
       const oldPointTax = oldTaxPerPoint(incomePerPoint);
       const newPointTax = newTaxPerPoint(incomePerPoint);
@@ -794,7 +810,6 @@
           newTotal: newTaxPerPoint(perPoint) * points + FIXED_HOUSEHOLD_TAX
         };
       });
-      const hasSavingsArea = chartData.every((item) => item.oldTotal >= item.newTotal);
 
       const currentOld = metrics.oldTotal;
       const currentNew = metrics.newTotal;
@@ -808,13 +823,38 @@
 
       const oldPath = chartData.map((item, index) => `${index === 0 ? "M" : "L"} ${scaleX(item.income).toFixed(2)} ${scaleY(item.oldTotal).toFixed(2)}`).join(" ");
       const newPath = chartData.map((item, index) => `${index === 0 ? "M" : "L"} ${scaleX(item.income).toFixed(2)} ${scaleY(item.newTotal).toFixed(2)}`).join(" ");
-      const areaPath = [
-        `M ${scaleX(chartData[0].income).toFixed(2)} ${scaleY(chartData[0].oldTotal).toFixed(2)}`,
-        ...chartData.slice(1).map((item) => `L ${scaleX(item.income).toFixed(2)} ${scaleY(item.oldTotal).toFixed(2)}`),
-        ...chartData.slice().reverse().map((item) => `L ${scaleX(item.income).toFixed(2)} ${scaleY(item.newTotal).toFixed(2)}`),
-        "Z"
-      ].join(" ");
+      const areaPaths = [];
+      for (let i = 0; i < chartData.length - 1; i += 1) {
+        const start = chartData[i];
+        const end = chartData[i + 1];
+        const startDiff = start.oldTotal - start.newTotal;
+        const endDiff = end.oldTotal - end.newTotal;
+        const x1 = scaleX(start.income);
+        const x2 = scaleX(end.income);
+        const oldY1 = scaleY(start.oldTotal);
+        const oldY2 = scaleY(end.oldTotal);
+        const newY1 = scaleY(start.newTotal);
+        const newY2 = scaleY(end.newTotal);
 
+        if (startDiff <= 0 && endDiff <= 0) continue;
+
+        if (startDiff > 0 && endDiff > 0) {
+          areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
+          continue;
+        }
+
+        const ratio = startDiff / (startDiff - endDiff);
+        const crossX = x1 + ((x2 - x1) * ratio);
+        const crossOldY = oldY1 + ((oldY2 - oldY1) * ratio);
+        const crossNewY = newY1 + ((newY2 - newY1) * ratio);
+        const crossY = (crossOldY + crossNewY) / 2;
+
+        if (startDiff > 0) {
+          areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
+        } else {
+          areaPaths.push(`M ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} Z`);
+        }
+      }
       const trackerX = scaleX(state.income);
       const trackerOldY = scaleY(currentOld);
       const trackerNewY = scaleY(currentNew);
@@ -842,7 +882,7 @@
             <text x="${scaleX(income)}" y="${height - 16}" font-size="12" fill="#5f6f8a" text-anchor="middle">${(income / 1000).toFixed(0)}k</text>
           </g>
         `).join("")}
-        ${hasSavingsArea ? `<path d="${areaPath}" fill="url(#fillArea)"></path>` : ""}
+        ${areaPaths.map((path) => `<path d="${path}" fill="url(#fillArea)"></path>`).join("")}
         <path d="${oldPath}" fill="none" stroke="${chartColors.red}" stroke-width="4" stroke-linecap="round"></path>
         <path d="${newPath}" fill="none" stroke="${chartColors.blue}" stroke-width="4" stroke-linecap="round" stroke-dasharray="12 10"></path>
         <line x1="${trackerX}" x2="${trackerX}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="#0f172a" stroke-width="2" stroke-dasharray="4 6"></line>
