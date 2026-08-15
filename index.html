@@ -614,6 +614,7 @@
     };
     const FIXED_HOUSEHOLD_TAX = 2000;
     const CHART_SAMPLE_COUNT = 36;
+    const CHART_X_LABELS = [LIMITS.incomeMin, 25000, 35000, LIMITS.incomeRangeMax, 55000, LIMITS.incomeAbsoluteMax];
 
     const state = { ...DEFAULT_STATE };
     let isEditingIncome = false;
@@ -853,12 +854,12 @@
 
         const ratio = startDiff / (startDiff - endDiff);
         const crossX = x1 + ((x2 - x1) * ratio);
-        const crossOldY = oldY1 + ((oldY2 - oldY1) * ratio);
-        const crossNewY = newY1 + ((newY2 - newY1) * ratio);
+        const crossY = oldY1 + ((oldY2 - oldY1) * ratio);
+
         if (startDiff > 0) {
-          areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${crossX.toFixed(2)} ${crossOldY.toFixed(2)} L ${crossX.toFixed(2)} ${crossNewY.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
+          areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
         } else if (endDiff > 0) {
-          areaPaths.push(`M ${crossX.toFixed(2)} ${crossOldY.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} L ${crossX.toFixed(2)} ${crossNewY.toFixed(2)} Z`);
+          areaPaths.push(`M ${crossX.toFixed(2)} ${crossY.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} L ${crossX.toFixed(2)} ${crossY.toFixed(2)} Z`);
         }
       }
       const trackerX = scaleX(state.income);
@@ -866,8 +867,6 @@
       const trackerNewY = scaleY(currentNew);
 
       const yGrid = Array.from({ length: 5 }, (_, i) => (maxY / 4) * i);
-      const xLabels = [15000, 25000, 35000, 45000, 55000, 70000];
-
       svg.innerHTML = `
         <defs>
           <linearGradient id="fillArea" x1="0" x2="0" y1="0" y2="1">
@@ -882,7 +881,7 @@
             <text x="${padding.left - 10}" y="${scaleY(value) + 4}" font-size="12" fill="#5f6f8a" text-anchor="end">${Math.round(value).toLocaleString("he-IL")}</text>
           </g>
         `).join("")}
-        ${xLabels.map((income) => `
+        ${CHART_X_LABELS.map((income) => `
           <g>
             <line x1="${scaleX(income)}" x2="${scaleX(income)}" y1="${padding.top}" y2="${height - padding.bottom}" stroke="rgba(148,163,184,0.12)" stroke-width="1"></line>
             <text x="${scaleX(income)}" y="${height - 16}" font-size="12" fill="#5f6f8a" text-anchor="middle">${(income / 1000).toFixed(0)}k</text>
