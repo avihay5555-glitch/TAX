@@ -613,6 +613,7 @@
       kidsMax: 15
     };
     const FIXED_HOUSEHOLD_TAX = 2000;
+    const CHART_SAMPLE_COUNT = 36;
 
     const state = { ...DEFAULT_STATE };
     let isEditingIncome = false;
@@ -805,7 +806,10 @@
       const maxIncome = LIMITS.incomeAbsoluteMax;
       const points = metrics.points;
 
-      const samples = Array.from({ length: 36 }, (_, i) => LIMITS.incomeMin + ((maxIncome - LIMITS.incomeMin) * i) / 35);
+      const samples = Array.from(
+        { length: CHART_SAMPLE_COUNT },
+        (_, i) => LIMITS.incomeMin + ((maxIncome - LIMITS.incomeMin) * i) / (CHART_SAMPLE_COUNT - 1)
+      );
       const chartData = samples.map((income) => {
         const perPoint = income / points;
         return {
@@ -853,7 +857,7 @@
         const crossNewY = newY1 + ((newY2 - newY1) * ratio);
         if (startDiff > 0) {
           areaPaths.push(`M ${x1.toFixed(2)} ${oldY1.toFixed(2)} L ${crossX.toFixed(2)} ${crossOldY.toFixed(2)} L ${crossX.toFixed(2)} ${crossNewY.toFixed(2)} L ${x1.toFixed(2)} ${newY1.toFixed(2)} Z`);
-        } else {
+        } else if (endDiff > 0) {
           areaPaths.push(`M ${crossX.toFixed(2)} ${crossOldY.toFixed(2)} L ${x2.toFixed(2)} ${oldY2.toFixed(2)} L ${x2.toFixed(2)} ${newY2.toFixed(2)} L ${crossX.toFixed(2)} ${crossNewY.toFixed(2)} Z`);
         }
       }
