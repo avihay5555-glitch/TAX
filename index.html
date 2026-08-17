@@ -1051,7 +1051,8 @@
           usesManualPoints
         };
       }
-      const incomePerPoint = state.income / points;
+      const incomeAfterFixed = state.income - fixedTax;
+      const incomePerPoint = incomeAfterFixed / points;
       const oldPointTax = oldTaxPerPoint(incomePerPoint);
       const newPointTax = newTaxPerPoint(incomePerPoint);
       const oldTotal = oldPointTax * points + fixedTax;
@@ -1152,7 +1153,7 @@
         LIMITS.incomeMin + ((maxIncome - LIMITS.incomeMin) * i) / (CHART_SAMPLE_COUNT - 1)
       );
       const data = samples.map((inc) => {
-        const pp = inc / pts;
+        const pp = (inc - fixedTax) / pts;
         return { inc, old: oldTaxPerPoint(pp) * pts + fixedTax, nw: newTaxPerPoint(pp) * pts + fixedTax };
       });
 
@@ -1202,8 +1203,8 @@
 
       // Savings band label
       const midInc = (LIMITS.incomeMin + maxIncome) / 2;
-      const midOld = (oldTaxPerPoint(midInc / pts) * pts + fixedTax);
-      const midNew = (newTaxPerPoint(midInc / pts) * pts + fixedTax);
+      const midOld = (oldTaxPerPoint((midInc - fixedTax) / pts) * pts + fixedTax);
+      const midNew = (newTaxPerPoint((midInc - fixedTax) / pts) * pts + fixedTax);
       const bandLabelY = midOld > midNew ? (sy(midOld) + sy(midNew)) / 2 : null;
 
       svg.innerHTML = `
