@@ -140,6 +140,15 @@
     .hint.warning { color: #9a5a00; }
 
     .segmented, .chips { display: flex; gap: 7px; flex-wrap: wrap; }
+    .choice-note {
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(23, 155, 103, 0.08);
+      color: #126b49;
+      font-size: 0.82rem;
+      font-weight: 700;
+      line-height: 1.5;
+    }
 
     .pill, .chip {
       appearance: none;
@@ -646,7 +655,7 @@
         <div>
           <p class="hint">מחשבון מהיר · מותאם לנייד</p>
           <h1>השוואת מס איזון – קיבוץ</h1>
-          <p class="subtitle">השוו מנגנון ישן מול מעודכן וראו כמה תחסכו. לא כולל קרן עזרה הדדית.</p>
+          <p class="subtitle">חישוב מס איזון אישי ועדכני. אפשר להשוות למס של שנת ההפרטה הראשונה לפי בחירה.</p>
         </div>
         <div class="action-bar">
           <button class="btn btn-primary" id="shareBtn" type="button">שיתוף</button>
@@ -659,8 +668,24 @@
       <div class="panel controls">
         <div class="controls-grid">
           <div class="group">
+            <div class="group-title"><span>סטטוס חברים</span></div>
+            <div class="segmented" id="memberType">
+              <button class="pill active" type="button" data-member-type="existing">חבר בקיבוץ מתחדש</button>
+              <button class="pill" type="button" data-member-type="new">חברים חדשים</button>
+            </div>
+            <p class="choice-note" id="memberTypeNote">החישוב מבוסס על המס המעודכן לחברי הקיבוץ המתחדש.</p>
+          </div>
+
+          <div class="group">
             <div class="group-title"><span>סוג משק בית</span></div>
             <div class="segmented" id="householdType"></div>
+          </div>
+
+          <div class="group" id="comparisonControl">
+            <div class="group-title"><span>השוואה</span></div>
+            <div class="segmented">
+              <button class="pill" id="comparisonToggleBtn" type="button" aria-pressed="false">השווה למס של שנת ההפרטה הראשונה<br><small>08/25–07/26</small></button>
+            </div>
           </div>
 
           <div class="group">
@@ -732,9 +757,9 @@
       <div class="grid">
         <section class="stats">
           <div class="stats-grid">
-            <article class="stat-card old">
+            <article class="stat-card old" id="oldTaxCard" hidden>
               <div class="stat-head">
-                <span class="stat-label" id="oldTaxLabel">מס חודשי · מנגנון ישן</span>
+                <span class="stat-label" id="oldTaxLabel">מס חודשי · שנת ההפרטה הראשונה</span>
                 <span class="stat-icon" aria-hidden="true">🏛️</span>
               </div>
               <strong class="stat-value" id="oldTaxValue">₪ 0</strong>
@@ -756,7 +781,7 @@
               </div>
             </article>
 
-            <article class="stat-card save" id="deltaCard">
+            <article class="stat-card save" id="deltaCard" hidden>
               <div class="stat-head">
                 <span class="stat-label" id="deltaLabel">חיסכון למשק הבית</span>
                 <span class="stat-icon" id="deltaIcon" aria-hidden="true">💚</span>
@@ -788,21 +813,21 @@
             <span>עקומות מס לפי הרכב המשק הנבחר</span>
           </div>
           <div class="legend">
-            <span class="legend-item"><span class="swatch" style="background: var(--red);"></span>מנגנון ישן</span>
-            <span class="legend-item"><span class="swatch" style="background: var(--blue);"></span>מנגנון מעודכן</span>
-            <span class="legend-item"><span class="swatch" style="background: rgba(23,155,103,.4);"></span>חיסכון</span>
+            <span class="legend-item" id="oldLegend" hidden><span class="swatch" style="background: var(--red);"></span>שנת ההפרטה הראשונה</span>
+            <span class="legend-item"><span class="swatch" style="background: var(--blue);"></span><span id="currentLegend">מס איזון מעודכן</span></span>
+            <span class="legend-item" id="savingsLegend" hidden><span class="swatch" style="background: rgba(23,155,103,.4);"></span>חיסכון</span>
           </div>
           <div class="chart-focus-grid">
             <div class="chart-focus-card"><span class="hint">הכנסה נוכחית</span><strong id="chartIncomeValue">₪ 0</strong></div>
-            <div class="chart-focus-card"><span class="hint" id="chartOldLabel">מס ישן</span><strong id="chartOldValue">₪ 0</strong></div>
+            <div class="chart-focus-card" id="chartOldCard" hidden><span class="hint" id="chartOldLabel">מס ישן</span><strong id="chartOldValue">₪ 0</strong></div>
             <div class="chart-focus-card"><span class="hint" id="chartNewLabel">מס חדש</span><strong id="chartNewValue">₪ 0</strong></div>
-            <div class="chart-focus-card"><span class="hint" id="chartDeltaLabel">פער חודשי</span><strong id="chartDeltaValue">₪ 0</strong></div>
-            <div class="chart-focus-card"><span class="hint" id="chartCurrentSavingsLabel">חיסכון בנקודה הנוכחית</span><strong id="chartCurrentSavingsValue">₪ 0</strong></div>
+            <div class="chart-focus-card" id="chartDeltaCard" hidden><span class="hint" id="chartDeltaLabel">פער חודשי</span><strong id="chartDeltaValue">₪ 0</strong></div>
+            <div class="chart-focus-card" id="chartSavingsCard" hidden><span class="hint" id="chartCurrentSavingsLabel">חיסכון בנקודה הנוכחית</span><strong id="chartCurrentSavingsValue">₪ 0</strong></div>
           </div>
           <div class="chart-box">
             <svg id="taxChart" viewBox="0 0 760 320" aria-labelledby="chartTitle chartDesc" role="img">
-              <title id="chartTitle">גרף השוואת מס איזון</title>
-              <desc id="chartDesc">גרף SVG המשווה בין סך המס במנגנון הישן למעודכן.</desc>
+              <title id="chartTitle">גרף מס איזון</title>
+              <desc id="chartDesc">גרף SVG של סך מס האיזון לפי הכנסה.</desc>
             </svg>
           </div>
           <div class="chart-actions">
@@ -825,7 +850,7 @@
       </div>
       <p style="font-size:0.85rem;color:var(--muted);line-height:1.55;">הטבלאות מציגות את שיעורי המס על <strong>הכנסה לנקודה</strong> (= הכנסה הכוללת ÷ נקודות תקן). המס הסופי = מס לנקודה × נקודות + מס קבוע.</p>
 
-      <div>
+      <div id="legacyTableSection" hidden>
         <div class="table-section-title"><span class="dot" style="background:var(--red);"></span>מנגנון ישן – מדרגות מס לנקודה</div>
         <div class="tax-table-wrap">
           <table class="tax-table">
@@ -848,9 +873,10 @@
             </tbody>
           </table>
         </div>
+
       </div>
 
-      <div>
+      <div id="updatedTableSection">
         <div class="table-section-title"><span class="dot" style="background:var(--blue);"></span>מנגנון מעודכן – מדרגות מס לנקודה</div>
         <div class="tax-table-wrap">
           <table class="tax-table">
@@ -873,8 +899,21 @@
         </div>
       </div>
 
+      <div id="newMemberTableSection" hidden>
+        <div class="table-section-title"><span class="dot" style="background:var(--blue);"></span>חברים חדשים – מדרגות מס לנקודה</div>
+        <div class="tax-table-wrap">
+          <table class="tax-table">
+            <thead><tr><th>מ-</th><th>עד-</th><th>שיעור</th></tr></thead>
+            <tbody>
+              <tr><td>0 ₪</td><td>4,500 ₪</td><td>0%</td></tr>
+              <tr><td>4,501 ₪</td><td>ומעלה</td><td>25%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div style="background:rgba(44,103,242,0.07);border-radius:14px;padding:12px 16px;font-size:0.84rem;line-height:1.6;color:var(--muted);">
-        <strong style="color:var(--text);">מס קבוע:</strong> זוג חברים – 2,000 ₪ | חבר יחיד / חבר בודד בזוג – 1,000 ₪<br>
+        <strong style="color:var(--text);">מס קבוע:</strong> <span id="fixedTaxNote">זוג חברים – 2,000 ₪ | חבר יחיד / חבר בודד בזוג – 1,000 ₪</span><br>
         <strong style="color:var(--text);">החישוב לא כולל</strong> קרן עזרה הדדית.
       </div>
     </div>
@@ -888,6 +927,8 @@
     ];
 
     const DEFAULT_STATE = {
+      memberType: "existing",
+      showLegacyComparison: false,
       householdType: "couple",
       kidsUnder18: 3,
       kids18Plus: 0,
@@ -904,6 +945,7 @@
     };
     const FIXED_TAX_COUPLE = 2000;
     const FIXED_TAX_SINGLE = 1000;
+    const FIXED_TAX_NEW_MEMBER_COUPLE = 1200;
     const CHART_SAMPLE_COUNT = 60;
 
     const state = { ...DEFAULT_STATE };
@@ -911,6 +953,10 @@
 
     const els = {
       householdType: document.getElementById("householdType"),
+      memberType: document.getElementById("memberType"),
+      memberTypeNote: document.getElementById("memberTypeNote"),
+      comparisonControl: document.getElementById("comparisonControl"),
+      comparisonToggleBtn: document.getElementById("comparisonToggleBtn"),
       kidsUnderChips: document.getElementById("kidsUnderChips"),
       kidsUnderValue: document.getElementById("kidsUnderValue"),
       kidsAdultValue: document.getElementById("kidsAdultValue"),
@@ -918,6 +964,7 @@
       incomeInput: document.getElementById("incomeInput"),
       incomeRange: document.getElementById("incomeRange"),
       oldTaxValue: document.getElementById("oldTaxValue"),
+      oldTaxCard: document.getElementById("oldTaxCard"),
       newTaxValue: document.getElementById("newTaxValue"),
       oldTaxPerPointValue: document.getElementById("oldTaxPerPointValue"),
       newTaxPerPointValue: document.getElementById("newTaxPerPointValue"),
@@ -945,12 +992,18 @@
       liveScoreLabel: document.getElementById("liveScoreLabel"),
       chartIncomeValue: document.getElementById("chartIncomeValue"),
       chartOldLabel: document.getElementById("chartOldLabel"),
+      chartOldCard: document.getElementById("chartOldCard"),
       chartNewLabel: document.getElementById("chartNewLabel"),
       chartOldValue: document.getElementById("chartOldValue"),
       chartNewValue: document.getElementById("chartNewValue"),
       chartDeltaLabel: document.getElementById("chartDeltaLabel"),
+      chartDeltaCard: document.getElementById("chartDeltaCard"),
       chartDeltaValue: document.getElementById("chartDeltaValue"),
       chartCurrentSavingsLabel: document.getElementById("chartCurrentSavingsLabel"),
+      chartSavingsCard: document.getElementById("chartSavingsCard"),
+      oldLegend: document.getElementById("oldLegend"),
+      savingsLegend: document.getElementById("savingsLegend"),
+      currentLegend: document.getElementById("currentLegend"),
       chartCurrentSavingsValue: document.getElementById("chartCurrentSavingsValue"),
       taxChart: document.getElementById("taxChart"),
       shareBtn: document.getElementById("shareBtn"),
@@ -960,6 +1013,12 @@
       showTablesBtn: document.getElementById("showTablesBtn"),
       tablesModal: document.getElementById("tablesModal"),
       closeModal: document.getElementById("closeModal"),
+      legacyTableSection: document.getElementById("legacyTableSection"),
+      updatedTableSection: document.getElementById("updatedTableSection"),
+      newMemberTableSection: document.getElementById("newMemberTableSection"),
+      fixedTaxNote: document.getElementById("fixedTaxNote"),
+      chartTitle: document.getElementById("chartTitle"),
+      chartDesc: document.getElementById("chartDesc"),
       incomeMinusBtn: document.getElementById("incomeMinusBtn"),
       incomePlusBtn: document.getElementById("incomePlusBtn")
     };
@@ -1015,6 +1074,7 @@
 
     function getFixedHouseholdTax(householdType) {
       const type = householdType != null ? householdType : state.householdType;
+      if (state.memberType === "new") return FIXED_TAX_NEW_MEMBER_COUPLE;
       return type === "couple" ? FIXED_TAX_COUPLE : FIXED_TAX_SINGLE;
     }
 
@@ -1038,6 +1098,10 @@
       return 1410 + (x - 8000) * 0.44;
     }
 
+    function newMemberTaxPerPoint(x) {
+      return x <= 4500 ? 0 : (x - 4500) * 0.25;
+    }
+
     function calculate() {
       const points = getTotalPoints();
       const autoPoints = getAutoPoints();
@@ -1054,7 +1118,7 @@
       const incomeAfterFixed = state.income - fixedTax;
       const incomePerPoint = incomeAfterFixed / points;
       const oldPointTax = oldTaxPerPoint(incomePerPoint);
-      const newPointTax = newTaxPerPoint(incomePerPoint);
+      const newPointTax = state.memberType === "new" ? newMemberTaxPerPoint(incomePerPoint) : newTaxPerPoint(incomePerPoint);
       const oldTotal = oldPointTax * points + fixedTax;
       const newTotal = newPointTax * points + fixedTax;
       const delta = oldTotal - newTotal;
@@ -1072,7 +1136,8 @@
 
     function createHouseholdPills() {
       els.householdType.innerHTML = "";
-      HOUSEHOLDS.forEach((item) => {
+      const householdOptions = state.memberType === "new" ? HOUSEHOLDS.filter((item) => item.key === "couple") : HOUSEHOLDS;
+      householdOptions.forEach((item) => {
         const button = document.createElement("button");
         button.type = "button";
         button.className = `pill${state.householdType === item.key ? " active" : ""}`;
@@ -1154,10 +1219,11 @@
       );
       const data = samples.map((inc) => {
         const pp = (inc - fixedTax) / pts;
-        return { inc, old: oldTaxPerPoint(pp) * pts + fixedTax, nw: newTaxPerPoint(pp) * pts + fixedTax };
+        return { inc, old: oldTaxPerPoint(pp) * pts + fixedTax, nw: (state.memberType === "new" ? newMemberTaxPerPoint(pp) : newTaxPerPoint(pp)) * pts + fixedTax };
       });
 
-      const maxY = data.reduce((m, d) => Math.max(m, d.old, d.nw), 0) * 1.1;
+      const showComparison = state.showLegacyComparison;
+      const maxY = data.reduce((m, d) => Math.max(m, showComparison ? d.old : 0, d.nw), 0) * 1.1;
 
       const sx = (inc) => pad.left + ((inc - LIMITS.incomeMin) / (maxIncome - LIMITS.incomeMin)) * cW;
       const sy = (v) => pad.top + cH - (v / maxY) * cH;
@@ -1203,9 +1269,9 @@
 
       // Savings band label
       const midInc = (LIMITS.incomeMin + maxIncome) / 2;
-      const midOld = (oldTaxPerPoint((midInc - fixedTax) / pts) * pts + fixedTax);
-      const midNew = (newTaxPerPoint((midInc - fixedTax) / pts) * pts + fixedTax);
-      const bandLabelY = midOld > midNew ? (sy(midOld) + sy(midNew)) / 2 : null;
+      const midOld = oldTaxPerPoint((midInc - fixedTax) / pts) * pts + fixedTax;
+      const midNew = (state.memberType === "new" ? newMemberTaxPerPoint((midInc - fixedTax) / pts) : newTaxPerPoint((midInc - fixedTax) / pts) * 1) * pts + fixedTax;
+      const bandLabelY = showComparison && midOld > midNew ? (sy(midOld) + sy(midNew)) / 2 : null;
 
       svg.innerHTML = `
         <defs>
@@ -1253,14 +1319,14 @@
         <text x="${pad.left + cW / 2}" y="${H - 2}" font-size="11" fill="#9aa5b4" text-anchor="middle">הכנסה (₪)</text>
 
         <!-- Savings area -->
-        ${areaParts.map(p => `<path d="${p}" fill="url(#areaGrad)"/>`).join("")}
+        ${showComparison ? areaParts.map(p => `<path d="${p}" fill="url(#areaGrad)"/>`).join("") : ""}
 
         <!-- Savings band label -->
         ${bandLabelY !== null ? `<text x="${sx(midInc).toFixed(1)}" y="${bandLabelY.toFixed(1)}" font-size="11" font-weight="700" fill="rgba(23,155,103,0.85)" text-anchor="middle">חיסכון</text>` : ""}
 
         <!-- Old line -->
-        <path d="${pathD("old")}" fill="none" stroke="url(#redGrad)" stroke-width="3.5"
-              stroke-linecap="round" stroke-linejoin="round"/>
+        ${showComparison ? `<path d="${pathD("old")}" fill="none" stroke="url(#redGrad)" stroke-width="3.5"
+              stroke-linecap="round" stroke-linejoin="round"/>` : ""}
 
         <!-- New line -->
         <path d="${pathD("nw")}" fill="none" stroke="url(#blueGrad)" stroke-width="3.5"
@@ -1273,15 +1339,50 @@
               fill="${metrics.delta >= 0 ? "#179b67" : "#9a5a00"}" text-anchor="${savingsLabelAnchor}">${currentSavingsLabel}: ${formatCurrency(currentSavings)}</text>
 
         <!-- Dots at current income -->
-        <circle cx="${tx.toFixed(1)}" cy="${toy.toFixed(1)}" r="7" fill="${chartColors.red}"
-                stroke="white" stroke-width="2.5" filter="url(#glow)"/>
+        ${showComparison ? `<circle cx="${tx.toFixed(1)}" cy="${toy.toFixed(1)}" r="7" fill="${chartColors.red}"
+                stroke="white" stroke-width="2.5" filter="url(#glow)"/>` : ""}
         <circle cx="${tx.toFixed(1)}" cy="${tny.toFixed(1)}" r="7" fill="${chartColors.blue}"
                 stroke="white" stroke-width="2.5" filter="url(#glow)"/>
       `;
     }
 
     function render() {
+      const isNewMember = state.memberType === "new";
+      if (isNewMember) {
+        state.householdType = "couple";
+        state.showLegacyComparison = false;
+      }
+      const showComparison = state.showLegacyComparison;
       const metrics = calculate();
+      els.memberType.querySelectorAll("[data-member-type]").forEach((button) => {
+        const active = button.dataset.memberType === state.memberType;
+        button.classList.toggle("active", active);
+        button.setAttribute("aria-pressed", String(active));
+      });
+      els.memberTypeNote.textContent = isNewMember
+        ? "חברים חדשים מחושבים כזוג בלבד: מס קבוע 1,200 ₪ ומס איזון של 25% מעל 4,500 ₪ לנקודה."
+        : "החישוב מבוסס על המס המעודכן לחברי הקיבוץ המתחדש.";
+      els.comparisonControl.hidden = isNewMember;
+      els.comparisonToggleBtn.classList.toggle("active", showComparison);
+      els.comparisonToggleBtn.setAttribute("aria-pressed", String(showComparison));
+      els.oldTaxCard.hidden = !showComparison;
+      els.deltaCard.hidden = !showComparison;
+      els.chartOldCard.hidden = !showComparison;
+      els.chartDeltaCard.hidden = !showComparison;
+      els.chartSavingsCard.hidden = !showComparison;
+      els.oldLegend.hidden = !showComparison;
+      els.savingsLegend.hidden = !showComparison;
+      els.currentLegend.textContent = isNewMember ? "מס חברים חדשים" : "מס איזון מעודכן";
+      els.legacyTableSection.hidden = !showComparison;
+      els.updatedTableSection.hidden = isNewMember;
+      els.newMemberTableSection.hidden = !isNewMember;
+      els.fixedTaxNote.textContent = isNewMember
+        ? "זוג חברים חדשים – 1,200 ₪"
+        : "זוג חברים – 2,000 ₪ | חבר יחיד / חבר בודד בזוג – 1,000 ₪";
+      els.chartTitle.textContent = showComparison ? "גרף השוואת מס איזון" : "גרף מס איזון";
+      els.chartDesc.textContent = showComparison
+        ? "גרף SVG המשווה בין סך המס בשנת ההפרטה הראשונה למס העדכני."
+        : "גרף SVG של סך מס האיזון העדכני לפי הכנסה.";
       createHouseholdPills();
       createUnder18Chips();
       syncIncomeUI();
@@ -1297,8 +1398,8 @@
       els.incomePerPointValue.textContent = formatCurrency(metrics.incomePerPoint);
       const fixedTax = getFixedHouseholdTax();
       els.fixedTaxValue.textContent = formatCurrency(fixedTax);
-      els.oldTaxLabel.textContent = `מס חודשי · מנגנון ישן (כולל מס קבוע ${formatCurrency(fixedTax)})`;
-      els.newTaxLabel.textContent = `מס חודשי · מנגנון מעודכן (כולל מס קבוע ${formatCurrency(fixedTax)})`;
+      els.oldTaxLabel.textContent = `מס חודשי · שנת ההפרטה הראשונה (כולל מס קבוע ${formatCurrency(fixedTax)})`;
+      els.newTaxLabel.textContent = `מס חודשי · ${isNewMember ? "חברים חדשים" : "מנגנון מעודכן"} (כולל מס קבוע ${formatCurrency(fixedTax)})`;
 
       if (els.liveScoreValue.textContent !== formattedPoints) {
         els.liveScoreValue.textContent = formattedPoints;
@@ -1323,7 +1424,7 @@
       els.reductionValue.textContent = `${Math.abs(metrics.reduction).toFixed(1)}%`;
       els.chartIncomeValue.textContent = formatCurrency(state.income);
       els.chartOldLabel.textContent = `מס ישן (כולל קבוע ${formatCurrency(fixedTax)})`;
-      els.chartNewLabel.textContent = `מס חדש (כולל קבוע ${formatCurrency(fixedTax)})`;
+      els.chartNewLabel.textContent = `${isNewMember ? "מס חברים חדשים" : "מס מעודכן"} (כולל קבוע ${formatCurrency(fixedTax)})`;
       els.chartOldValue.textContent = formatCurrency(metrics.oldTotal);
       els.chartNewValue.textContent = formatCurrency(metrics.newTotal);
       els.chartDeltaLabel.textContent = hasSavings ? "פער חודשי" : "תוספת חודשית";
@@ -1333,6 +1434,22 @@
 
       renderChart(metrics);
     }
+
+    els.memberType.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-member-type]");
+      if (!button) return;
+      state.memberType = button.dataset.memberType;
+      if (state.memberType === "new") {
+        state.householdType = "couple";
+        state.showLegacyComparison = false;
+      }
+      render();
+    });
+
+    els.comparisonToggleBtn.addEventListener("click", () => {
+      state.showLegacyComparison = !state.showLegacyComparison;
+      render();
+    });
 
     function setIncome(nextIncome) {
       state.income = clamp(nextIncome, LIMITS.incomeMin, LIMITS.incomeAbsoluteMax);
@@ -1479,7 +1596,8 @@
     els.snapshotBtn.addEventListener("click", () => {
       const metrics = calculate();
       const householdLabel = HOUSEHOLDS.find(h => h.key === state.householdType)?.label ?? "";
-      const hasSavings = metrics.delta >= 0;
+      const showComparison = state.showLegacyComparison;
+      const hasSavings = showComparison && metrics.delta >= 0;
       const pointsModeLabel = metrics.usesManualPoints ? "נקודות ידניות" : "נקודות מחושבות";
 
       // Build a readable canvas-based summary image
@@ -1574,16 +1692,20 @@
         ctx.fillText("הערה: בניקוד ידני לא מוצגים סוג המשק ונתוני הילדים.", 768, 368);
       }
 
-      drawCard(24, 422, 244, 160, "rgba(255,240,244,0.96)", "rgba(223,90,111,0.24)");
-      drawCard(288, 422, 244, 160, "rgba(240,245,255,0.96)", "rgba(44,103,242,0.24)");
-      drawCard(552, 422, 244, 160, hasSavings ? "rgba(234,252,244,0.98)" : "rgba(255,247,233,0.98)", hasSavings ? "rgba(23,155,103,0.26)" : "rgba(198,125,0,0.3)");
-
-      [
-        { x: 244, title: "מס חודשי ישן", value: formatCurrency(metrics.oldTotal), color: "#c0354d", note: `מס לנקודה: ${formatCurrency(metrics.oldPointTax)}` },
-        { x: 508, title: "מס חודשי חדש", value: formatCurrency(metrics.newTotal), color: "#1746b7", note: `מס לנקודה: ${formatCurrency(metrics.newPointTax)}` },
-        { x: 772, title: hasSavings ? "חיסכון חודשי" : "תוספת חודשית", value: formatCurrency(hasSavings ? metrics.savings : metrics.extraCost), color: hasSavings ? "#179b67" : "#9a5a00", note: `${Math.abs(metrics.reduction).toFixed(1)}% ${hasSavings ? "ירידה" : "שינוי"}` }
-      ].forEach((card, index) => {
-        const cardRight = index === 0 ? 244 : index === 1 ? 508 : 772;
+      const summaryCards = showComparison
+        ? [
+            { title: "מס חודשי – שנת ההפרטה הראשונה", value: formatCurrency(metrics.oldTotal), color: "#c0354d", note: `מס לנקודה: ${formatCurrency(metrics.oldPointTax)}`, bg: "rgba(255,240,244,0.96)", border: "rgba(223,90,111,0.24)" },
+            { title: "מס חודשי עדכני", value: formatCurrency(metrics.newTotal), color: "#1746b7", note: `מס לנקודה: ${formatCurrency(metrics.newPointTax)}`, bg: "rgba(240,245,255,0.96)", border: "rgba(44,103,242,0.24)" },
+            { title: hasSavings ? "חיסכון חודשי" : "תוספת חודשית", value: formatCurrency(hasSavings ? metrics.savings : metrics.extraCost), color: hasSavings ? "#179b67" : "#9a5a00", note: `${Math.abs(metrics.reduction).toFixed(1)}% ${hasSavings ? "ירידה" : "שינוי"}`, bg: hasSavings ? "rgba(234,252,244,0.98)" : "rgba(255,247,233,0.98)", border: hasSavings ? "rgba(23,155,103,0.26)" : "rgba(198,125,0,0.3)" }
+          ]
+        : [
+            { title: state.memberType === "new" ? "מס חודשי – חברים חדשים" : "מס חודשי עדכני", value: formatCurrency(metrics.newTotal), color: "#1746b7", note: `מס לנקודה: ${formatCurrency(metrics.newPointTax)} · מס קבוע: ${formatCurrency(getFixedHouseholdTax())}`, bg: "rgba(240,245,255,0.96)", border: "rgba(44,103,242,0.24)" }
+          ];
+      const cardWidth = showComparison ? 244 : 772;
+      summaryCards.forEach((card, index) => {
+        const cardRight = showComparison ? 244 + (index * 264) : 772;
+        const cardLeft = showComparison ? 24 + (index * 264) : 24;
+        drawCard(cardLeft, 422, cardWidth, 160, card.bg, card.border);
         ctx.fillStyle = labelColor;
         ctx.font = `700 15px -apple-system, BlinkMacSystemFont, Arial`;
         ctx.fillText(card.title, cardRight, 458);
@@ -1606,11 +1728,11 @@
       drawCard(24, 614, 772, 176, bannerGrad, "rgba(255,255,255,0)");
       ctx.fillStyle = "#fff";
       ctx.font = `700 18px -apple-system, BlinkMacSystemFont, Arial`;
-      ctx.fillText(hasSavings ? "תמונת מצב חיובית" : "שימו לב לשינוי בעלות", 768, 656);
+      ctx.fillText(showComparison ? (hasSavings ? "תמונת מצב חיובית" : "שימו לב לשינוי בעלות") : "המס החודשי המחושב", 768, 656);
       ctx.font = `900 42px -apple-system, BlinkMacSystemFont, Arial`;
-      ctx.fillText(formatCurrency(Math.abs(metrics.yearlyDelta)), 768, 716);
+      ctx.fillText(showComparison ? formatCurrency(Math.abs(metrics.yearlyDelta)) : formatCurrency(metrics.newTotal), 768, 716);
       ctx.font = `600 18px -apple-system, BlinkMacSystemFont, Arial`;
-      ctx.fillText(hasSavings ? "חיסכון שנתי משוער למשק הבית" : "עלות שנתית משוערת למשק הבית", 768, 748);
+      ctx.fillText(showComparison ? (hasSavings ? "חיסכון שנתי משוער למשק הבית" : "עלות שנתית משוערת למשק הבית") : "בהתאם לנתונים שהוזנו", 768, 748);
       ctx.font = `500 15px -apple-system, BlinkMacSystemFont, Arial`;
       ctx.fillText(`מס קבוע למשק: ${formatCurrency(getFixedHouseholdTax())} · הכנסה לנקודה: ${formatCurrency(metrics.incomePerPoint)}`, 768, 780);
 
@@ -1620,8 +1742,8 @@
       ctx.fillText("פירוש הנתונים", 768, 856);
       ctx.fillStyle = labelColor;
       ctx.font = `500 15px -apple-system, BlinkMacSystemFont, Arial`;
-      ctx.fillText("• מס ישן ומס חדש מוצגים כסכום החודשי הכולל לאחר מס קבוע.", 768, 888);
-      ctx.fillText("• החיסכון/התוספת מחושבים כהפרש בין המנגנון הישן למעודכן.", 768, 914);
+      ctx.fillText(showComparison ? "• המסים מוצגים כסכום החודשי הכולל לאחר מס קבוע." : "• המס המוצג הוא הסכום החודשי הכולל לאחר מס קבוע.", 768, 888);
+      ctx.fillText(showComparison ? "• החיסכון/התוספת מחושבים מול שנת ההפרטה הראשונה." : "• ניתן להפעיל באתר השוואה לשנת ההפרטה הראשונה.", 768, 914);
       ctx.fillText("• מומלץ לאמת את הנתונים מול הנהלת הקיבוץ לפני קבלת החלטה.", 768, 940);
 
       // Trigger download
