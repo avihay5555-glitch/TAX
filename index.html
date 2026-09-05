@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="מס איזון">
   <meta name="theme-color" content="#0f172a">
-  <meta name="description" content="מחשבון מס איזון להשוואה בין מנגנון ישן למעודכן עבור משקי בית בקיבוץ.">
+  <meta name="description" content="מחשבון מס איזון חודשי למשקי בית בקיבוץ.">
   <title>מחשבון מס איזון</title>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-TNSBNW42WG"></script>
@@ -42,6 +42,60 @@
       --transition: 160ms ease;
     }
 
+    .comparison-option {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 13px 14px;
+      border: 1px solid rgba(44, 103, 242, 0.2);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(240, 246, 255, 0.8));
+      cursor: pointer;
+      transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    .comparison-option:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(44, 103, 242, 0.12); }
+    .comparison-option:has(input:checked) {
+      border-color: rgba(23, 155, 103, 0.52);
+      background: linear-gradient(135deg, rgba(234, 252, 244, 0.98), rgba(238, 247, 255, 0.9));
+      box-shadow: 0 12px 28px rgba(23, 155, 103, 0.13);
+    }
+
+    .comparison-checkbox {
+      appearance: none;
+      width: 26px;
+      height: 26px;
+      margin: 0;
+      border: 2px solid rgba(44, 103, 242, 0.4);
+      border-radius: 9px;
+      background: #fff;
+      display: grid;
+      place-content: center;
+      cursor: pointer;
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+    }
+
+    .comparison-checkbox::before {
+      content: "✓";
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 900;
+      transform: scale(0);
+      transition: transform var(--transition);
+    }
+
+    .comparison-checkbox:checked {
+      border-color: var(--green);
+      background: var(--green);
+      transform: scale(1.08);
+    }
+
+    .comparison-checkbox:checked::before { transform: scale(1); }
+    .comparison-copy { display: grid; gap: 2px; }
+    .comparison-copy strong { font-size: 0.9rem; }
+    .comparison-copy span { color: var(--muted); font-size: 0.8rem; line-height: 1.4; }
+
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     html, body {
@@ -53,6 +107,10 @@
         radial-gradient(circle at top left, rgba(23, 155, 103, 0.12), transparent 40%),
         linear-gradient(180deg, var(--bg-1), var(--bg-2));
       color: var(--text);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
     }
 
     body { padding: max(12px, env(safe-area-inset-top)) 14px max(18px, env(safe-area-inset-bottom)); }
@@ -654,8 +712,8 @@
       <div class="hero-top">
         <div>
           <p class="hint">מחשבון מהיר · מותאם לנייד</p>
-          <h1>השוואת מס איזון – קיבוץ</h1>
-          <p class="subtitle">חישוב מס איזון אישי ועדכני. אפשר להשוות למס של שנת ההפרטה הראשונה לפי בחירה.</p>
+          <h1>מחשבון מס איזון חודשי</h1>
+          <p class="subtitle">הזינו הכנסה והרכב משק בית לקבלת אומדן מס איזון חודשי.</p>
         </div>
         <div class="action-bar">
           <button class="btn btn-primary" id="shareBtn" type="button">שיתוף</button>
@@ -670,10 +728,10 @@
           <div class="group">
             <div class="group-title"><span>סטטוס חברים</span></div>
             <div class="segmented" id="memberType">
-              <button class="pill active" type="button" data-member-type="existing">חבר בקיבוץ מתחדש</button>
-              <button class="pill" type="button" data-member-type="new">חברים חדשים</button>
+              <button class="pill active" type="button" data-member-type="existing">חבר מלפני ההפרטה</button>
+              <button class="pill" type="button" data-member-type="new">חברים חדשים (לאחר ההפרטה)</button>
             </div>
-            <p class="choice-note" id="memberTypeNote">החישוב מבוסס על המס המעודכן לחברי הקיבוץ המתחדש.</p>
+            <p class="choice-note" id="memberTypeNote">החישוב מבוסס על מס האיזון העדכני לחברים מלפני ההפרטה.</p>
           </div>
 
           <div class="group">
@@ -682,10 +740,14 @@
           </div>
 
           <div class="group" id="comparisonControl">
-            <div class="group-title"><span>השוואה</span></div>
-            <div class="segmented">
-              <button class="pill" id="comparisonToggleBtn" type="button" aria-pressed="false">השווה למס של שנת ההפרטה הראשונה<br><small>08/25–07/26</small></button>
-            </div>
+            <div class="group-title"><span>השוואה היסטורית (אופציונלי)</span></div>
+            <label class="comparison-option" for="comparisonToggle">
+              <input class="comparison-checkbox" id="comparisonToggle" type="checkbox">
+              <span class="comparison-copy">
+                <strong>השוו למס בשנת ההפרטה הראשונה</strong>
+                <span>הוספת מסלול ההשוואה תציג את ההפרש החודשי והגרף המקביל.</span>
+              </span>
+            </label>
           </div>
 
           <div class="group">
@@ -845,7 +907,7 @@
   <div class="modal-overlay" id="tablesModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal-sheet">
       <div class="modal-header">
-        <h2 id="modalTitle" style="font-size:1.15rem;font-weight:900;">טבלאות מדרגות המס</h2>
+        <h2 id="modalTitle" style="font-size:1.15rem;font-weight:900;">מדרגות מס לפי המסלול הנבחר</h2>
         <button class="modal-close" id="closeModal" type="button" aria-label="סגירה">✕</button>
       </div>
       <p style="font-size:0.85rem;color:var(--muted);line-height:1.55;">הטבלאות מציגות את שיעורי המס על <strong>הכנסה לנקודה</strong> (= הכנסה הכוללת ÷ נקודות תקן). המס הסופי = מס לנקודה × נקודות + מס קבוע.</p>
@@ -956,7 +1018,7 @@
       memberType: document.getElementById("memberType"),
       memberTypeNote: document.getElementById("memberTypeNote"),
       comparisonControl: document.getElementById("comparisonControl"),
-      comparisonToggleBtn: document.getElementById("comparisonToggleBtn"),
+      comparisonToggle: document.getElementById("comparisonToggle"),
       kidsUnderChips: document.getElementById("kidsUnderChips"),
       kidsUnderValue: document.getElementById("kidsUnderValue"),
       kidsAdultValue: document.getElementById("kidsAdultValue"),
@@ -1335,8 +1397,8 @@
         <!-- Current income vertical line -->
         <line x1="${tx.toFixed(1)}" x2="${tx.toFixed(1)}" y1="${pad.top}" y2="${H - pad.bottom}"
               stroke="rgba(15,23,42,0.35)" stroke-width="1.5" stroke-dasharray="5 5"/>
-        <text x="${savingsLabelX.toFixed(1)}" y="${(pad.top + 14).toFixed(1)}" font-size="11.5" font-weight="700"
-              fill="${metrics.delta >= 0 ? "#179b67" : "#9a5a00"}" text-anchor="${savingsLabelAnchor}">${currentSavingsLabel}: ${formatCurrency(currentSavings)}</text>
+        ${showComparison ? `<text x="${savingsLabelX.toFixed(1)}" y="${(pad.top + 14).toFixed(1)}" font-size="11.5" font-weight="700"
+              fill="${metrics.delta >= 0 ? "#179b67" : "#9a5a00"}" text-anchor="${savingsLabelAnchor}">${currentSavingsLabel}: ${formatCurrency(currentSavings)}</text>` : ""}
 
         <!-- Dots at current income -->
         ${showComparison ? `<circle cx="${tx.toFixed(1)}" cy="${toy.toFixed(1)}" r="7" fill="${chartColors.red}"
@@ -1360,11 +1422,10 @@
         button.setAttribute("aria-pressed", String(active));
       });
       els.memberTypeNote.textContent = isNewMember
-        ? "חברים חדשים מחושבים כזוג בלבד: מס קבוע 1,200 ₪ ומס איזון של 25% מעל 4,500 ₪ לנקודה."
-        : "החישוב מבוסס על המס המעודכן לחברי הקיבוץ המתחדש.";
+        ? "חברים חדשים (לאחר ההפרטה) מחושבים כזוג בלבד: מס קבוע 1,200 ₪ ומס איזון של 25% מעל 4,500 ₪ לנקודה."
+        : "החישוב מבוסס על מס האיזון העדכני לחברים מלפני ההפרטה.";
       els.comparisonControl.hidden = isNewMember;
-      els.comparisonToggleBtn.classList.toggle("active", showComparison);
-      els.comparisonToggleBtn.setAttribute("aria-pressed", String(showComparison));
+      els.comparisonToggle.checked = showComparison;
       els.oldTaxCard.hidden = !showComparison;
       els.deltaCard.hidden = !showComparison;
       els.chartOldCard.hidden = !showComparison;
@@ -1446,8 +1507,8 @@
       render();
     });
 
-    els.comparisonToggleBtn.addEventListener("click", () => {
-      state.showLegacyComparison = !state.showLegacyComparison;
+    els.comparisonToggle.addEventListener("change", () => {
+      state.showLegacyComparison = els.comparisonToggle.checked;
       render();
     });
 
@@ -1556,7 +1617,7 @@
 
     /* ── Share ── */
     els.shareBtn.addEventListener("click", async () => {
-      const payload = { title: document.title, text: "מחשבון מס איזון להשוואה בין המנגנון הישן למעודכן", url: window.location.href };
+      const payload = { title: document.title, text: "מחשבון מס איזון חודשי", url: window.location.href };
       try {
         if (navigator.share) {
           await navigator.share(payload);
@@ -1634,7 +1695,7 @@
       ctx.fillStyle = "#fff";
       ctx.font = `bold 28px -apple-system, BlinkMacSystemFont, Arial`;
       ctx.textAlign = "right";
-      ctx.fillText("דף סיכום – מחשבון מס איזון", 780, 44);
+      ctx.fillText("דף סיכום – מחשבון מס איזון חודשי", 780, 44);
       ctx.font = `15px -apple-system, BlinkMacSystemFont, Arial`;
       ctx.fillStyle = "rgba(255,255,255,0.88)";
       ctx.fillText("הנתונים מסודרים לשמירה ולהדפסה · לא כולל קרן עזרה הדדית", 780, 78);
@@ -1743,7 +1804,7 @@
       ctx.fillStyle = labelColor;
       ctx.font = `500 15px -apple-system, BlinkMacSystemFont, Arial`;
       ctx.fillText(showComparison ? "• המסים מוצגים כסכום החודשי הכולל לאחר מס קבוע." : "• המס המוצג הוא הסכום החודשי הכולל לאחר מס קבוע.", 768, 888);
-      ctx.fillText(showComparison ? "• החיסכון/התוספת מחושבים מול שנת ההפרטה הראשונה." : "• ניתן להפעיל באתר השוואה לשנת ההפרטה הראשונה.", 768, 914);
+      if (showComparison) ctx.fillText("• החיסכון/התוספת מחושבים מול שנת ההפרטה הראשונה.", 768, 914);
       ctx.fillText("• מומלץ לאמת את הנתונים מול הנהלת הקיבוץ לפני קבלת החלטה.", 768, 940);
 
       // Trigger download
